@@ -438,7 +438,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28685bd894f747243b1a2fe4b9193f29, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CarController
-  speed: 10
+  speed: 20
   rotationSpeed: 100
 --- !u!4 &914534962 stripped
 Transform:
