@@ -1,29 +1,83 @@
-﻿using UnityEngine;
-using UnityEngine.InputSystem; // důležité!
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 
 public class CarController : MonoBehaviour
 {
-    public float speed = 10f;
-    public float rotationSpeed = 100f;
+    private float horizontalInput, verticalInput;
+    private float currentSteerAngle, currentbreakForce;
+    private bool isBreaking;
 
-    private Vector2 moveInput;
+    // Settings
+    [SerializeField] private float motorForce, breakForce, maxSteerAngle;
 
-    void Update()
+    // Wheel Colliders
+    [SerializeField] private WheelCollider frontLeftWheelCollider, frontRightWheelCollider;
+    [SerializeField] private WheelCollider rearLeftWheelCollider, rearRightWheelCollider;
+
+    // Wheels
+    [SerializeField] private Transform frontLeftWheelTransform, frontRightWheelTransform;
+    [SerializeField] private Transform rearLeftWheelTransform, rearRightWheelTransform;
+
+    private void FixedUpdate()
     {
-        // čtení WASD z nového Input Systemu
-        moveInput = Vector2.zero;
+        GetInput();
+        HandleMotor();
+        HandleSteering();
+        UpdateWheels();
+    }
 
-        if (Keyboard.current.wKey.isPressed) moveInput.y += 1;
-        if (Keyboard.current.sKey.isPressed) moveInput.y -= 1;
-        if (Keyboard.current.aKey.isPressed) moveInput.x -= 1;
-        if (Keyboard.current.dKey.isPressed) moveInput.x += 1;
+    private void GetInput()
+    {
+        // Steering Input
+        horizontalInput = Input.GetAxis("Horizontal");
 
-        // pohyb dopředu/dozadu
-        float move = moveInput.y * speed * Time.deltaTime;
-        transform.Translate(0, 0, move);
+        // Acceleration Input
+        verticalInput = Input.GetAxis("Vertical");
 
-        // otáčení
-        float turn = moveInput.x * rotationSpeed * Time.deltaTime;
-        transform.Rotate(0, turn, 0);
+        // Breaking Input
+        isBreaking = Input.GetKey(KeyCode.Space);
+    }
+
+    private void HandleMotor()
+    {
+        
+        currentbreakForce = isBreaking ? breakForce : 0f;
+        ApplyBreaking();
+        frontLeftWheelCollider.motorTorque = verticalInput * motorForce * 50f;
+        frontRightWheelCollider.motorTorque = verticalInput * motorForce * 50f;
+    }
+
+    private void ApplyBreaking()
+    {
+        frontRightWheelCollider.brakeTorque = currentbreakForce;
+        frontLeftWheelCollider.brakeTorque = currentbreakForce;
+        rearLeftWheelCollider.brakeTorque = currentbreakForce;
+        rearRightWheelCollider.brakeTorque = currentbreakForce;
+    }
+
+    private void HandleSteering()
+    {
+        currentSteerAngle = maxSteerAngle * horizontalInput;
+        frontLeftWheelCollider.steerAngle = currentSteerAngle;
+        frontRightWheelCollider.steerAngle = currentSteerAngle;
+    }
+
+    private void UpdateWheels()
+    {
+        UpdateSingleWheel(frontLeftWheelCollider, frontLeftWheelTransform);
+        UpdateSingleWheel(frontRightWheelCollider, frontRightWheelTransform);
+        UpdateSingleWheel(rearRightWheelCollider, rearRightWheelTransform);
+        UpdateSingleWheel(rearLeftWheelCollider, rearLeftWheelTransform);
+    }
+
+    private void UpdateSingleWheel(WheelCollider wheelCollider, Transform wheelTransform)
+    {
+        Vector3 pos;
+        Quaternion rot;
+        wheelCollider.GetWorldPose(out pos, out rot);
+        wheelTransform.rotation = rot;
+        wheelTransform.position = pos;
     }
 }
