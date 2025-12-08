@@ -3793,8 +3793,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28685bd894f747243b1a2fe4b9193f29, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CarController
-  motorForce: 1000
-  breakForce: 3000
+  motorForce: 3000
+  breakForce: 1000
   maxSteerAngle: 35
   frontLeftWheelCollider: {fileID: 1503128688}
   frontRightWheelCollider: {fileID: 1829002512}
@@ -8587,7 +8587,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "START / C\xCDL"
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
