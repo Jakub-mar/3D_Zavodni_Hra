@@ -1,83 +1,121 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
+[RequireComponent(typeof(Rigidbody))]
 public class CarController : MonoBehaviour
 {
-    private float horizontalInput, verticalInput;
-    private float currentSteerAngle, currentbreakForce;
-    private bool isBreaking;
+    [Header("Wheel Colliders")]
+    public WheelCollider frontLeftCollider;
+    public WheelCollider frontRightCollider;
+    public WheelCollider rearLeftCollider;
+    public WheelCollider rearRightCollider;
 
-    // Settings
-    [SerializeField] private float motorForce, breakForce, maxSteerAngle;
+    [Header("Wheel Meshes (optional, for visual)")]
+    public Transform frontLeftMesh;
+    public Transform frontRightMesh;
+    public Transform rearLeftMesh;
+    public Transform rearRightMesh;
 
-    // Wheel Colliders
-    [SerializeField] private WheelCollider frontLeftWheelCollider, frontRightWheelCollider;
-    [SerializeField] private WheelCollider rearLeftWheelCollider, rearRightWheelCollider;
+    [Header("Settings")]
+    public float motorTorque = 3000f;
+    public float maxSteerAngle = 30f;
+    public float brakeTorque = 5000f;
+    public float handBrakeTorque = 8000f;
+    public float maxSpeed = 200f; // km/h
+    public float downforce = 100f;
 
-    // Wheels
-    [SerializeField] private Transform frontLeftWheelTransform, frontRightWheelTransform;
-    [SerializeField] private Transform rearLeftWheelTransform, rearRightWheelTransform;
+    private Rigidbody rb;
+    
 
-    private void FixedUpdate()
+    void Start()
     {
-        GetInput();
-        HandleMotor();
-        HandleSteering();
-        UpdateWheels();
-    }
-
-    private void GetInput()
-    {
-        // Steering Input
-        horizontalInput = Input.GetAxis("Horizontal");
-
-        // Acceleration Input
-        verticalInput = Input.GetAxis("Vertical");
-
-        // Breaking Input
-        isBreaking = Input.GetKey(KeyCode.Space);
-    }
-
-    private void HandleMotor()
-    {
+        rb = GetComponent<Rigidbody>();
+        rb.centerOfMass += Vector3.down * 0.5f; // nízké těžiště pro stabilitu
         
-        currentbreakForce = isBreaking ? breakForce : 0f;
-        ApplyBreaking();
-        frontLeftWheelCollider.motorTorque = verticalInput * motorForce;
-        frontRightWheelCollider.motorTorque = verticalInput * motorForce;
     }
 
-    private void ApplyBreaking()
+    void Update()
     {
-        frontRightWheelCollider.brakeTorque = currentbreakForce;
-        frontLeftWheelCollider.brakeTorque = currentbreakForce;
-        rearLeftWheelCollider.brakeTorque = currentbreakForce;
-        rearRightWheelCollider.brakeTorque = currentbreakForce;
+        HandleInput();
+        UpdateWheelMeshes();
     }
 
-    private void HandleSteering()
+    void FixedUpdate()
     {
-        currentSteerAngle = maxSteerAngle * horizontalInput;
-        frontLeftWheelCollider.steerAngle = currentSteerAngle;
-        frontRightWheelCollider.steerAngle = currentSteerAngle;
+        ApplyPhysics();
     }
 
-    private void UpdateWheels()
+    float inputMotor;
+    float inputSteer;
+    bool isBraking;
+    bool isHandbrake;
+
+    void HandleInput()
     {
-        UpdateSingleWheel(frontLeftWheelCollider, frontLeftWheelTransform);
-        UpdateSingleWheel(frontRightWheelCollider, frontRightWheelTransform);
-        UpdateSingleWheel(rearRightWheelCollider, rearRightWheelTransform);
-        UpdateSingleWheel(rearLeftWheelCollider, rearLeftWheelTransform);
+        inputMotor = Input.GetAxis("Vertical");   // W/S nebo šipky
+        inputSteer = Input.GetAxis("Horizontal"); // A/D nebo šipky
+        isBraking = Input.GetKey(KeyCode.Space);
+        isHandbrake = Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.C);
     }
 
-    private void UpdateSingleWheel(WheelCollider wheelCollider, Transform wheelTransform)
+    void ApplyPhysics()
     {
+        // Motor / zrychlení
+        if (rb.linearVelocity.magnitude < (maxSpeed / 3.6f)) // převod km/h → m/s
+        {
+            rearLeftCollider.motorTorque = inputMotor * motorTorque;
+            rearRightCollider.motorTorque = inputMotor * motorTorque;
+        }
+        else
+        {
+            rearLeftCollider.motorTorque = 0;
+            rearRightCollider.motorTorque = 0;
+        }
+
+        // Řízení
+        float steerAngle = maxSteerAngle * inputSteer;
+        frontLeftCollider.steerAngle = steerAngle;
+        frontRightCollider.steerAngle = steerAngle;
+
+        // Brzda
+        if (isBraking)
+        {
+            frontLeftCollider.brakeTorque = brakeTorque;
+            frontRightCollider.brakeTorque = brakeTorque;
+            rearLeftCollider.brakeTorque = brakeTorque * 0.5f;
+            rearRightCollider.brakeTorque = brakeTorque * 0.5f;
+        }
+        else if (isHandbrake)
+        {
+            rearLeftCollider.brakeTorque = handBrakeTorque;
+            rearRightCollider.brakeTorque = handBrakeTorque;
+        }
+        else
+        {
+            frontLeftCollider.brakeTorque = 0;
+            frontRightCollider.brakeTorque = 0;
+            rearLeftCollider.brakeTorque = 0;
+            rearRightCollider.brakeTorque = 0;
+        }
+
+        // Downforce pro stabilitu ve vysoké rychlosti
+        rb.AddForce(-transform.up * downforce * rb.linearVelocity.magnitude);
+    }
+
+    void UpdateWheelMeshes()
+    {
+        UpdateWheel(frontLeftCollider, frontLeftMesh);
+        UpdateWheel(frontRightCollider, frontRightMesh);
+        UpdateWheel(rearLeftCollider, rearLeftMesh);
+        UpdateWheel(rearRightCollider, rearRightMesh);
+    }
+
+    void UpdateWheel(WheelCollider col, Transform mesh)
+    {
+        if (mesh == null) return;
         Vector3 pos;
         Quaternion rot;
-        wheelCollider.GetWorldPose(out pos, out rot);
-        wheelTransform.rotation = rot;
-        wheelTransform.position = pos;
+        col.GetWorldPose(out pos, out rot);
+        mesh.position = pos;
+        mesh.rotation = rot;
     }
 }
