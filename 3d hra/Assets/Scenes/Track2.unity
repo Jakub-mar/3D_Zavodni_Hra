@@ -406,17 +406,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28685bd894f747243b1a2fe4b9193f29, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CarController
-  motorForce: 3000
-  breakForce: 1000
+  frontLeftCollider: {fileID: 0}
+  frontRightCollider: {fileID: 0}
+  rearLeftCollider: {fileID: 0}
+  rearRightCollider: {fileID: 0}
+  frontLeftMesh: {fileID: 0}
+  frontRightMesh: {fileID: 0}
+  rearLeftMesh: {fileID: 0}
+  rearRightMesh: {fileID: 0}
+  motorTorque: 3000
   maxSteerAngle: 35
-  frontLeftWheelCollider: {fileID: 1779011473}
-  frontRightWheelCollider: {fileID: 1331180825}
-  rearLeftWheelCollider: {fileID: 438663856}
-  rearRightWheelCollider: {fileID: 834156850}
-  frontLeftWheelTransform: {fileID: 1783228325}
-  frontRightWheelTransform: {fileID: 869063832}
-  rearLeftWheelTransform: {fileID: 1789408203}
-  rearRightWheelTransform: {fileID: 1168363814}
+  brakeTorque: 5000
+  handBrakeTorque: 8000
+  maxSpeed: 200
+  downforce: 100
+  steerSmoothTime: 0.08
+  highSpeedSteerFactor: 0.35
 --- !u!4 &680588937 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1880317207959290724, guid: c4cad50aa03bbca42938fe318344950b, type: 3}
@@ -523,11 +528,6 @@ Transform:
 --- !u!1 &869063831 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3982450954767655787, guid: c4cad50aa03bbca42938fe318344950b, type: 3}
-  m_PrefabInstance: {fileID: 2020424157}
-  m_PrefabAsset: {fileID: 0}
---- !u!4 &869063832 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 3570975274930632670, guid: c4cad50aa03bbca42938fe318344950b, type: 3}
   m_PrefabInstance: {fileID: 2020424157}
   m_PrefabAsset: {fileID: 0}
 --- !u!146 &869063833
@@ -674,7 +674,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: af5fd39dd0efa3a409f5a145757af01f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NewMonoBehaviourScript
-  target: {fileID: 680588937}
+  target: {fileID: 0}
   offset: {x: 0, y: 5, z: -10}
   followSpeed: 5
   rotationSpeed: 5
@@ -762,11 +762,6 @@ MeshCollider:
 --- !u!1 &1168363813 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 391397315203931578, guid: c4cad50aa03bbca42938fe318344950b, type: 3}
-  m_PrefabInstance: {fileID: 2020424157}
-  m_PrefabAsset: {fileID: 0}
---- !u!4 &1168363814 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 4378188931278180833, guid: c4cad50aa03bbca42938fe318344950b, type: 3}
   m_PrefabInstance: {fileID: 2020424157}
   m_PrefabAsset: {fileID: 0}
 --- !u!146 &1168363815
@@ -1196,11 +1191,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 7043018458676346540, guid: c4cad50aa03bbca42938fe318344950b, type: 3}
   m_PrefabInstance: {fileID: 2020424157}
   m_PrefabAsset: {fileID: 0}
---- !u!4 &1783228325 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 580311279415431662, guid: c4cad50aa03bbca42938fe318344950b, type: 3}
-  m_PrefabInstance: {fileID: 2020424157}
-  m_PrefabAsset: {fileID: 0}
 --- !u!146 &1783228326
 WheelCollider:
   m_ObjectHideFlags: 0
@@ -1243,11 +1233,6 @@ WheelCollider:
 --- !u!1 &1789408202 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5738022010395168443, guid: c4cad50aa03bbca42938fe318344950b, type: 3}
-  m_PrefabInstance: {fileID: 2020424157}
-  m_PrefabAsset: {fileID: 0}
---- !u!4 &1789408203 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 4837801160553823938, guid: c4cad50aa03bbca42938fe318344950b, type: 3}
   m_PrefabInstance: {fileID: 2020424157}
   m_PrefabAsset: {fileID: 0}
 --- !u!146 &1789408204
@@ -1331,6 +1316,10 @@ PrefabInstance:
     - target: {fileID: 1248598967819147742, guid: c4cad50aa03bbca42938fe318344950b, type: 3}
       propertyPath: m_Name
       value: Free Racing Car
+      objectReference: {fileID: 0}
+    - target: {fileID: 1248598967819147742, guid: c4cad50aa03bbca42938fe318344950b, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1248598967819147742, guid: c4cad50aa03bbca42938fe318344950b, type: 3}
       propertyPath: m_StaticEditorFlags

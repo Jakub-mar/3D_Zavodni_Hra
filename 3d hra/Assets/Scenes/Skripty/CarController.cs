@@ -23,14 +23,29 @@ public class CarController : MonoBehaviour
     public float maxSpeed = 200f; // km/h
     public float downforce = 100f;
 
+    [Header("Steering")]
+    [Tooltip("Čas pro vyhlazení natočení kol (menší = ostřejší reakce)")]
+    public float steerSmoothTime = 0.08f;
+    [Tooltip("Kolik procent maximálního úhlu zůstane při vysoké rychlosti (0..1)")]
+    [Range(0.1f, 1f)]
+    public float highSpeedSteerFactor = 0.35f;
+
     private Rigidbody rb;
-    
+
+    // interní řízení
+    float inputMotor;
+    float inputSteer;
+    bool isBraking;
+    bool isHandbrake;
+
+    // pro smooth steering
+    private float currentSteerAngle;
+    private float steerVelocity;
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
         rb.centerOfMass += Vector3.down * 0.5f; // nízké těžiště pro stabilitu
-        
     }
 
     void Update()
@@ -44,11 +59,6 @@ public class CarController : MonoBehaviour
         ApplyPhysics();
     }
 
-    float inputMotor;
-    float inputSteer;
-    bool isBraking;
-    bool isHandbrake;
-
     void HandleInput()
     {
         inputMotor = Input.GetAxis("Vertical");   // W/S nebo šipky
@@ -59,24 +69,34 @@ public class CarController : MonoBehaviour
 
     void ApplyPhysics()
     {
-        // Motor / zrychlení
-        if (rb.linearVelocity.magnitude < (maxSpeed / 3.6f)) // převod km/h → m/s
+        // rychlost v m/s a km/h
+        float speedMS = rb.linearVelocity.magnitude;
+        float speedKmh = speedMS * 3.6f;
+
+        // Motor / zrychlení (umožnit zpětný chod i nad maxSpeed omezit dálkově)
+        if (speedKmh < maxSpeed || inputMotor < 0f)
         {
+            frontLeftCollider.motorTorque = inputMotor * motorTorque;
+            frontRightCollider.motorTorque = inputMotor * motorTorque;
             rearLeftCollider.motorTorque = inputMotor * motorTorque;
             rearRightCollider.motorTorque = inputMotor * motorTorque;
         }
         else
         {
-            rearLeftCollider.motorTorque = 0;
-            rearRightCollider.motorTorque = 0;
+            rearLeftCollider.motorTorque = 0f;
+            rearRightCollider.motorTorque = 0f;
         }
 
-        // Řízení
-        float steerAngle = maxSteerAngle * inputSteer;
-        frontLeftCollider.steerAngle = steerAngle;
-        frontRightCollider.steerAngle = steerAngle;
+        // Řízení - citlivost závislá na rychlosti + vyhlazení
+        float speedFactor = Mathf.Clamp01(speedKmh / maxSpeed);
+        float steerLimit = Mathf.Lerp(maxSteerAngle, maxSteerAngle * highSpeedSteerFactor, speedFactor);
+        float targetSteer = steerLimit * inputSteer;
+        currentSteerAngle = Mathf.SmoothDamp(currentSteerAngle, targetSteer, ref steerVelocity, steerSmoothTime);
 
-        // Brzda
+        frontLeftCollider.steerAngle = currentSteerAngle;
+        frontRightCollider.steerAngle = currentSteerAngle;
+
+        // Brzda / handbrake
         if (isBraking)
         {
             frontLeftCollider.brakeTorque = brakeTorque;
@@ -86,19 +106,25 @@ public class CarController : MonoBehaviour
         }
         else if (isHandbrake)
         {
+            // handbrake obvykle pouze zadní kola
             rearLeftCollider.brakeTorque = handBrakeTorque;
             rearRightCollider.brakeTorque = handBrakeTorque;
+
+            // uvolnit přední brzdy pokud nebyly drženy
+            frontLeftCollider.brakeTorque = 0f;
+            frontRightCollider.brakeTorque = 0f;
         }
         else
         {
-            frontLeftCollider.brakeTorque = 0;
-            frontRightCollider.brakeTorque = 0;
-            rearLeftCollider.brakeTorque = 0;
-            rearRightCollider.brakeTorque = 0;
+            // žádná brzda - reset
+            frontLeftCollider.brakeTorque = 0f;
+            frontRightCollider.brakeTorque = 0f;
+            rearLeftCollider.brakeTorque = 0f;
+            rearRightCollider.brakeTorque = 0f;
         }
 
-        // Downforce pro stabilitu ve vysoké rychlosti
-        rb.AddForce(-transform.up * downforce * rb.linearVelocity.magnitude);
+        // Downforce pro stabilitu ve vysoké rychlosti (mírně škálováno rychlostí)
+        rb.AddForce(-transform.up * downforce * speedMS);
     }
 
     void UpdateWheelMeshes()
