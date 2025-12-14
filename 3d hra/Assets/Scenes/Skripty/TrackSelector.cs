@@ -1,20 +1,55 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
-public class TrackSelector : MonoBehaviour
+public class TrackSelection : MonoBehaviour
 {
-    public void LoadTrack1()
+    [Header("Track Buttons")]
+    public Button[] trackButtons;
+
+    [Header("Start Button")]
+    public GameObject startButton;
+
+    [Header("Scene Names")]
+    public string[] sceneNames;
+
+    private int selectedTrack = -1;
+
+    void Start()
     {
-        SceneManager.LoadScene("SampleScene");
+        // Skryj Start na zaèátku
+        startButton.SetActive(false);
+
+        // VYPNI VŠECHNY OUTLINE NA ZAÈÁTKU
+        for (int i = 0; i < trackButtons.Length; i++)
+        {
+            Outline outline = trackButtons[i].GetComponent<Outline>();
+            if (outline != null)
+                outline.enabled = false;
+
+            int index = i;
+            trackButtons[i].onClick.AddListener(() => SelectTrack(index));
+        }
     }
 
-    public void LoadTrack2()
+    void SelectTrack(int index)
     {
-        SceneManager.LoadScene("Track2");
+        selectedTrack = index;
+
+        startButton.SetActive(true);
+
+        for(int i = 0; i < trackButtons.Length; i++)
+        {
+            Outline outline = trackButtons[i].GetComponent<Outline>();
+            outline.enabled = (i == index);
+        }
     }
 
-    public void LoadTrack3()
+    public void StartGame()
     {
-        SceneManager.LoadScene("Track3");
+        if (selectedTrack>=0)
+        {
+           SceneManager.LoadScene(sceneNames[selectedTrack]);
+        }
     }
 }

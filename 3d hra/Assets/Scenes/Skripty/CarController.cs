@@ -21,8 +21,8 @@ public class CarController : MonoBehaviour
     public float brakeTorque = 5000f;
     public float handBrakeTorque = 8000f;
     public float maxSpeed = 200f; // km/h
-    public float downforce = 100f;
-
+    public float downforce = 50f;
+    
     [Header("Steering")]
     [Tooltip("Čas pro vyhlazení natočení kol (menší = ostřejší reakce)")]
     public float steerSmoothTime = 0.08f;
@@ -45,7 +45,9 @@ public class CarController : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-        rb.centerOfMass += Vector3.down * 0.5f; // nízké těžiště pro stabilitu
+        rb.linearDamping = 0.05f;        // odpor vzduchu
+        rb.angularDamping = 2.5f;  // stabilita při zatáčení
+        rb.centerOfMass = new Vector3(0f, -0.6f, 0f); // níže těžiště pro stabilitu
     }
 
     void Update()
@@ -88,10 +90,13 @@ public class CarController : MonoBehaviour
         }
 
         // Řízení - citlivost závislá na rychlosti + vyhlazení
-        float speedFactor = Mathf.Clamp01(speedKmh / maxSpeed);
-        float steerLimit = Mathf.Lerp(maxSteerAngle, maxSteerAngle * highSpeedSteerFactor, speedFactor);
+        float speedFactor = Mathf.InverseLerp(0f, 140f, speedKmh);
+        // nikdy nespadne pod 55 % úhlu
+        float steerLimit = Mathf.Lerp(maxSteerAngle, maxSteerAngle * 0.55f, speedFactor);
+
+        // plynulejší náběh
         float targetSteer = steerLimit * inputSteer;
-        currentSteerAngle = Mathf.SmoothDamp(currentSteerAngle, targetSteer, ref steerVelocity, steerSmoothTime);
+        currentSteerAngle = Mathf.Lerp(currentSteerAngle, targetSteer, Time.fixedDeltaTime * 6f);
 
         frontLeftCollider.steerAngle = currentSteerAngle;
         frontRightCollider.steerAngle = currentSteerAngle;
