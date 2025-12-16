@@ -14,16 +14,16 @@ public class NewMonoBehaviourScript : MonoBehaviour
     {
         if (target == null) return;
 
-        // CÌlov· pozice kamery (za autem podle offsetu)
+        // C√≠lov√° pozice kamery (za autem podle offsetu)
         Vector3 desiredPosition = target.position + target.TransformDirection(offset);
 
-        // Plynul˝ p¯echod kamery na novou pozici
+        // Plynul√Ω p≈ôechod kamery na novou pozici
         transform.position = Vector3.Lerp(transform.position, desiredPosition, followSpeed * Time.deltaTime);
 
-        // SmÏr, kam se kamera m· dÌvat (na auto)
+        // Smƒõr, kam se kamera m√° d√≠vat (na auto)
         Quaternion desiredRotation = Quaternion.LookRotation(target.position - transform.position, Vector3.up);
 
-        // PlynulÈ ot·ËenÌ kamery
+        // Plynul√© ot√°ƒçen√≠ kamery
         transform.rotation = Quaternion.Slerp(transform.rotation, desiredRotation, rotationSpeed * Time.deltaTime);
     }
 }

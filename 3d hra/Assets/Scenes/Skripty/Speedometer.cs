@@ -13,5 +13,6 @@ public class Speedometer : MonoBehaviour
     {
         float speed = carRb.linearVelocity.magnitude * 3.6f; // p�evod z m/s na km/h
         speedText.text = Mathf.RoundToInt(speed) + " km/h";
+
     }
 }

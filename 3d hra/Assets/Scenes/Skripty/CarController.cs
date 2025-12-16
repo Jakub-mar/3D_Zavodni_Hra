@@ -16,7 +16,7 @@ public class CarController : MonoBehaviour
     public Transform rearRightMesh;
 
     [Header("Settings")]
-    public float motorTorque = 3000f;
+    public float motorTorque = 4000f;
     public float maxSteerAngle = 30f;
     public float brakeTorque = 5000f;
     public float handBrakeTorque = 8000f;
@@ -71,17 +71,21 @@ public class CarController : MonoBehaviour
 
     void ApplyPhysics()
     {
-        // rychlost v m/s a km/h
         float speedMS = rb.linearVelocity.magnitude;
         float speedKmh = speedMS * 3.6f;
 
-        // Motor / zrychlení (umožnit zpětný chod i nad maxSpeed omezit dálkově)
+        //výkon klesá s rychlostí (simulace převodů)
+        float speedRatio = Mathf.Clamp01(speedKmh / maxSpeed);
+        float enginePower = motorTorque * (1f - speedRatio);
+
+        // minimální tah, aby auto neumřelo
+        enginePower = Mathf.Max(enginePower, motorTorque * 0.25f);
+
+        //RWD – pohon jen zadních kol
         if (speedKmh < maxSpeed || inputMotor < 0f)
         {
-            frontLeftCollider.motorTorque = inputMotor * motorTorque;
-            frontRightCollider.motorTorque = inputMotor * motorTorque;
-            rearLeftCollider.motorTorque = inputMotor * motorTorque;
-            rearRightCollider.motorTorque = inputMotor * motorTorque;
+            rearLeftCollider.motorTorque = inputMotor * enginePower;
+            rearRightCollider.motorTorque = inputMotor * enginePower;
         }
         else
         {
@@ -89,19 +93,21 @@ public class CarController : MonoBehaviour
             rearRightCollider.motorTorque = 0f;
         }
 
-        // Řízení - citlivost závislá na rychlosti + vyhlazení
-        float speedFactor = Mathf.InverseLerp(0f, 140f, speedKmh);
-        // nikdy nespadne pod 55 % úhlu
-        float steerLimit = Mathf.Lerp(maxSteerAngle, maxSteerAngle * 0.55f, speedFactor);
+        // předek netlačí
+        frontLeftCollider.motorTorque = 0f;
+        frontRightCollider.motorTorque = 0f;
 
-        // plynulejší náběh
+        //řízení (necháváme skoro stejné)
+        float speedFactor = Mathf.InverseLerp(0f, 140f, speedKmh);
+        float steerLimit = Mathf.Lerp(maxSteerAngle, maxSteerAngle * highSpeedSteerFactor, speedFactor);
+
         float targetSteer = steerLimit * inputSteer;
         currentSteerAngle = Mathf.Lerp(currentSteerAngle, targetSteer, Time.fixedDeltaTime * 6f);
 
         frontLeftCollider.steerAngle = currentSteerAngle;
         frontRightCollider.steerAngle = currentSteerAngle;
 
-        // Brzda / handbrake
+        //brzdy
         if (isBraking)
         {
             frontLeftCollider.brakeTorque = brakeTorque;
@@ -111,25 +117,19 @@ public class CarController : MonoBehaviour
         }
         else if (isHandbrake)
         {
-            // handbrake obvykle pouze zadní kola
             rearLeftCollider.brakeTorque = handBrakeTorque;
             rearRightCollider.brakeTorque = handBrakeTorque;
-
-            // uvolnit přední brzdy pokud nebyly drženy
-            frontLeftCollider.brakeTorque = 0f;
-            frontRightCollider.brakeTorque = 0f;
         }
         else
         {
-            // žádná brzda - reset
             frontLeftCollider.brakeTorque = 0f;
             frontRightCollider.brakeTorque = 0f;
             rearLeftCollider.brakeTorque = 0f;
             rearRightCollider.brakeTorque = 0f;
         }
 
-        // Downforce pro stabilitu ve vysoké rychlosti (mírně škálováno rychlostí)
-        rb.AddForce(-transform.up * downforce * speedMS);
+        // downforce až ve vyšší rychlosti
+        rb.AddForce(-transform.up * downforce * speedMS * 0.5f);
     }
 
     void UpdateWheelMeshes()
