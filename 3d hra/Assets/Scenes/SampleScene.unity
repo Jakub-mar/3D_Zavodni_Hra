@@ -4530,7 +4530,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 914534959}
   serializedVersion: 5
-  m_Mass: 1500
+  m_Mass: 1200
   m_LinearDamping: 0
   m_AngularDamping: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
@@ -4569,14 +4569,14 @@ MonoBehaviour:
   frontRightMesh: {fileID: 1827215758}
   rearLeftMesh: {fileID: 1169433395}
   rearRightMesh: {fileID: 880201540}
-  motorTorque: 1800
-  maxSteerAngle: 25
+  motorTorque: 4500
+  maxSteerAngle: 35
   brakeTorque: 5000
   handBrakeTorque: 8000
   maxSpeed: 160
   downforce: 50
   steerSmoothTime: 0.12
-  highSpeedSteerFactor: 0.25
+  highSpeedSteerFactor: 0.35
 --- !u!4 &914534962 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1880317207959290724, guid: c4cad50aa03bbca42938fe318344950b, type: 3}
@@ -4758,7 +4758,7 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 1000
-  field of view: 60
+  field of view: 80
   orthographic: 0
   orthographic size: 5
   m_Depth: -1
@@ -7392,6 +7392,7 @@ GameObject:
   - component: {fileID: 1557308313}
   - component: {fileID: 1557308312}
   - component: {fileID: 1557308311}
+  - component: {fileID: 1557308315}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -7486,6 +7487,37 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &1557308315
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1557308310}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ff1394490debe14fac0226a0f7a231a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CarDashboard
+  rb: {fileID: 914534960}
+  speedText: {fileID: 1814843774}
+  gearText: {fileID: 811941674}
+  gears:
+  - R
+  - N
+  - 1
+  - 2
+  - 3
+  - 4
+  - 5
+  gearSpeedLimits:
+  - 20
+  - 0
+  - 40
+  - 70
+  - 110
+  - 150
+  - 180
 --- !u!1001 &1557699045
 PrefabInstance:
   m_ObjectHideFlags: 0

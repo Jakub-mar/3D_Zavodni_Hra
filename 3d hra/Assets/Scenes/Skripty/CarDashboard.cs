@@ -16,7 +16,7 @@ public class CarDashboard : MonoBehaviour
     void Update()
     {
         float speed = rb.linearVelocity.magnitude * 3.6f; // m/s → km/h
-        speedText.text = Mathf.RoundToInt(speed) + " km/h";
+        
 
         UpdateGear(speed);
         gearText.text = gears[currentGear];

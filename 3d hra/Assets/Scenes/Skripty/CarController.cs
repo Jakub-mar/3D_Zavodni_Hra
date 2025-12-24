@@ -9,7 +9,7 @@ public class CarController : MonoBehaviour
     public WheelCollider rearLeftCollider;
     public WheelCollider rearRightCollider;
 
-    [Header("Wheel Meshes (optional, for visual)")]
+    [Header("Wheel Meshes")]
     public Transform frontLeftMesh;
     public Transform frontRightMesh;
     public Transform rearLeftMesh;
@@ -18,7 +18,7 @@ public class CarController : MonoBehaviour
     [Header("Settings")]
     public float motorTorque = 4000f;
     public float maxSteerAngle = 30f;
-    public float brakeTorque = 5000f;
+    public float brakeTorque = 2000f;
     public float handBrakeTorque = 8000f;
     public float maxSpeed = 200f; // km/h
     public float downforce = 50f;
