@@ -13,9 +13,9 @@ public class GameManager : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
-            DontDestroyOnLoad(gameObject);
+            //DontDestroyOnLoad(gameObject);
         }
-        else Destroy(gameObject);
+        //else Destroy(gameObject);
     }
 
     public void SelectTrack(int index)
@@ -26,7 +26,10 @@ public class GameManager : MonoBehaviour
     public void StartGame()
     {
         if (selectedTrack >= 0 && selectedTrack < sceneNames.Length)
+        {
+            Time.timeScale = 1f; // Vždy resetuj èas pøed naèítáním
             SceneManager.LoadScene(sceneNames[selectedTrack]);
+        }
     }
 
     public void ReturnToMainMenu()

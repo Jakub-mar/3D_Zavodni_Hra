@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 49da8e6e90754214f86c4ccb55d12cde
+timeCreated: 1492455192
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 88376
+  packageName: LowPoly Trees and Rocks
+  packageVersion: 1.0
+  assetPath: Assets/greyRoadStudio/LowPolyTreePack/Materials/Mat_Ground.mat
+  uploadId: 177768

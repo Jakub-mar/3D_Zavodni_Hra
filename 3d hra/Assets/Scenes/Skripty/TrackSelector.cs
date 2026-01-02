@@ -11,16 +11,18 @@ public class TrackSelection : MonoBehaviour
 
     void Start()
     {
-         startButton.SetActive(false); // Start button skrytý
+        startButton.SetActive(false);
 
-    for (int i = 0; i < trackButtons.Length; i++)
-    {
-        int index = i;
-        Outline outline = trackButtons[i].GetComponent<Outline>();
-        if (outline != null) outline.enabled = false;
+        for (int i = 0; i < trackButtons.Length; i++)
+        {
+            int index = i;
+            Outline outline = trackButtons[i].GetComponent<Outline>();
+            if (outline != null) outline.enabled = false;
 
-        trackButtons[i].onClick.AddListener(() => SelectTrack(index));
-    }
+            // DÙLEŽITÉ: Nejdøív odstraníme staré listenery, aby tam nebyly dvakrát
+            trackButtons[i].onClick.RemoveAllListeners();
+            trackButtons[i].onClick.AddListener(() => SelectTrack(index));
+        }
     }
 
     void SelectTrack(int index)
