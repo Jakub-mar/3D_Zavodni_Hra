@@ -7,6 +7,8 @@ public class PauseMenu : MonoBehaviour
     public Transform startPoint;
     public GameObject playerCar;
 
+    
+
     private bool isPaused = false;
 
     void Update()
@@ -36,12 +38,11 @@ public class PauseMenu : MonoBehaviour
     {
         Resume(); // odpauzuje hru
 
-        Rigidbody rb = playerCar.GetComponent<Rigidbody>();
-        rb.linearVelocity = Vector3.zero;
-        rb.angularVelocity = Vector3.zero;
+        Time.timeScale = 1f;
 
-        playerCar.transform.position = startPoint.position;
-        playerCar.transform.rotation = startPoint.rotation;
+        // 2. Naète aktuálnì aktivní scénu znovu od zaèátku
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+
     }
 
     public void Quit()
