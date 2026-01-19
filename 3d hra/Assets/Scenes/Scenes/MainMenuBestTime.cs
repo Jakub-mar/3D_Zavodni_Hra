@@ -3,35 +3,30 @@ using UnityEngine;
 
 public class MainMenuBestTime : MonoBehaviour
 {
-    public GameObject bestTimesPanel;
-    public TextMeshProUGUI bestTimeText;
+    [SerializeField] private string bestTimeKey = "BEST_TIME_TRACK_1";
+    [SerializeField] private TMP_Text bestTimeText;
 
-    private const string BEST_TIME_KEY = "BestLapTime";
-
-    public void OpenBestTimes()
+    private void OnEnable()
     {
-        bestTimesPanel.SetActive(true);
-
-        if (PlayerPrefs.HasKey(BEST_TIME_KEY))
-        {
-            float time = PlayerPrefs.GetFloat(BEST_TIME_KEY);
-            bestTimeText.text = "BEST TIME:\n" + FormatTime(time);
-        }
-        else
-        {
-            bestTimeText.text = "BEST TIME:\n--:--.--";
-        }
+        Refresh();
     }
 
-    public void CloseBestTimes()
+    public void Refresh()
     {
-        bestTimesPanel.SetActive(false);
+        if (!PlayerPrefs.HasKey(bestTimeKey))
+        {
+            bestTimeText.text = "Best time: --:--.---";
+            return;
+        }
+
+        float t = PlayerPrefs.GetFloat(bestTimeKey);
+        bestTimeText.text = "Best time: " + FormatTime(t);
     }
 
-    string FormatTime(float time)
+    private string FormatTime(float seconds)
     {
-        int min = (int)(time / 60);
-        float sec = time % 60;
-        return min + ":" + sec.ToString("00.00");
+        int minutes = Mathf.FloorToInt(seconds / 60f);
+        float s = seconds % 60f;
+        return $"{minutes:00}:{s:00.000}";
     }
 }

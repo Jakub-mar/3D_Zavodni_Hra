@@ -1,10 +1,11 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 public class LapSystem : MonoBehaviour
 {
     public int totalCheckpoints;
     public int totalLaps = 5;
     public RaceTimer raceTimer;
     public RaceUi raceUi;
+    public RaceFinishManager raceFinishManager;    
 
     private int currentCheckpoint = 0;
     private int currentLap = 1;
@@ -19,22 +20,22 @@ public class LapSystem : MonoBehaviour
         {
             CheckPoint cp = other.GetComponent<CheckPoint>();
 
-            // Kontrola poøadí checkpointù
+            // Kontrola poÃ¸adÃ­ checkpointÃ¹
             if (cp != null && cp.checkPointIndex == currentCheckpoint)
             {
-                // TADY JE ZMÌNA: Pøedáváme èas I index aktuálního checkpointu
+                // TADY JE ZMÃŒNA: PÃ¸edÃ¡vÃ¡me Ã¨as I index aktuÃ¡lnÃ­ho checkpointu
                 raceUi.ShowCheckpointTime(raceTimer.lapTime, currentCheckpoint);
 
                 currentCheckpoint++;
             }
         }
 
-        // CÍL (FINISH)
+        // CÃL (FINISH)
         if (other.CompareTag("Finish"))
         {
             if (currentCheckpoint >= totalCheckpoints)
             {
-                // Zobrazíme èas v cíli jako poslední checkpoint (index rovný totalCheckpoints)
+                // ZobrazÃ­me cas v cÃ­li jako poslednÃ­ checkpoint (index rovnÃ½ totalCheckpoints)
                 raceUi.ShowCheckpointTime(raceTimer.lapTime, totalCheckpoints);
 
                 if (currentLap < totalLaps)
@@ -45,21 +46,21 @@ public class LapSystem : MonoBehaviour
                 }
                 else
                 {
-                    FinishRace();
+                    raceFinishManager.FinishRace(raceTimer.totalTime);
                 }
             }
             else
             {
-                Debug.Log("Chybí ti checkpointy! Máš: " + currentCheckpoint + "/" + totalCheckpoints);
+                Debug.Log("ChybÃ­ ti checkpointy! MÃ¡Å¡: " + currentCheckpoint + "/" + totalCheckpoints);
             }
         }
     }
-    
+
     void FinishRace()
     {
         raceFinished = true;
         raceTimer.FinishRace();
-        Debug.Log("Závod dokonèen!");
+        Debug.Log("ZÃ¡vod dokonÃ¨en!");
     }
 
     public int GetLap() => currentLap;

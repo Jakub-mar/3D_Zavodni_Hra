@@ -22,7 +22,7 @@ public class RaceUi : MonoBehaviour
     void Update()
     {
         // 1. Aktualizace kol (vlevo nahoøe)
-        lapCountText.text = "LAP " + lapSystem.GetLap() + "/" + lapSystem.totalLaps;
+        lapCountText.text = /*"LAP " + */lapSystem.GetLap() + "/" + lapSystem.totalLaps;
 
         // 2. Aktuální èas kola (bìžící stopky)
         lapTimeText.text = FormatTime(raceTimer.lapTime);

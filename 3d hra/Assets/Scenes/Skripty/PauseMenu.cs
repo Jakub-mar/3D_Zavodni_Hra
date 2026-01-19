@@ -51,6 +51,6 @@ public class PauseMenu : MonoBehaviour
         isPaused = false;
         pauseMenu.SetActive(false);
 
-        GameManager.Instance.ReturnToMainMenu();
+        SceneManager.LoadScene("MainMenu"); // název scény
     }
 }
