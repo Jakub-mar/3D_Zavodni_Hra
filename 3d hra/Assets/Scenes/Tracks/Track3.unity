@@ -3772,7 +3772,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LapSystem
   totalCheckpoints: 1
-  totalLaps: 3
+  totalLaps: 2
   raceTimer: {fileID: 257975645}
   raceUi: {fileID: 1583099910}
   raceFinishManager: {fileID: 1255218445}
@@ -460698,8 +460698,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PauseMenu
   pauseMenu: {fileID: 1734616558}
-  startPoint: {fileID: 0}
-  playerCar: {fileID: 0}
+  startPoint: {fileID: 348058604}
+  playerCar: {fileID: 257975643}
 --- !u!114 &1788807453
 MonoBehaviour:
   m_ObjectHideFlags: 0

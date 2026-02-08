@@ -20,7 +20,7 @@ public class LapSystem : MonoBehaviour
         {
             CheckPoint cp = other.GetComponent<CheckPoint>();
 
-            // Kontrola poøadí checkpointù
+            // Kontrola pořadí checkpointù
             if (cp != null && cp.checkPointIndex == currentCheckpoint)
             {
                 // TADY JE ZMÌNA: Pøedáváme èas I index aktuálního checkpointu

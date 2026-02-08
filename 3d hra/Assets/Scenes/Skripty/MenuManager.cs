@@ -8,6 +8,7 @@ public class MenuManager : MonoBehaviour
     public GameObject trackSelect;
     public GameObject carSelect;
     public GameObject bestTime;
+    public GameObject optionMenu;
     
 
     void Start()
@@ -15,6 +16,15 @@ public class MenuManager : MonoBehaviour
         ShowMainMenu();
     }
   
+    public void ShowOptions()
+    {
+        mainMenu.SetActive(false);
+        startMenu.SetActive(false);
+        trackSelect.SetActive(false);
+        carSelect.SetActive(false);
+        bestTime.SetActive(false);
+        optionMenu.SetActive(true);
+    }
     public void ShowBestTime()
     {
         mainMenu.SetActive(false);
@@ -22,14 +32,17 @@ public class MenuManager : MonoBehaviour
         trackSelect.SetActive(false);
         carSelect.SetActive(false);
         bestTime.SetActive(true);
+        optionMenu.SetActive(false);
     }
     public void ShowMainMenu()
     {
+
         mainMenu.SetActive(true);
         startMenu.SetActive(false);
         trackSelect.SetActive(false);
         carSelect.SetActive(false);
         bestTime.SetActive(false);
+            optionMenu.SetActive(false);
     }
 
     public void ShowStartMenu()
@@ -39,6 +52,7 @@ public class MenuManager : MonoBehaviour
         trackSelect.SetActive(false);
         carSelect.SetActive(false);
         bestTime.SetActive(false);
+        optionMenu.SetActive(false);
     }
 
     public void ShowTrackSelect()
@@ -48,6 +62,7 @@ public class MenuManager : MonoBehaviour
         trackSelect.SetActive(true);
         carSelect.SetActive(false);
         bestTime.SetActive(false);
+            optionMenu.SetActive(false);
     }
 
     public void ShowCarSelect()
@@ -57,6 +72,7 @@ public class MenuManager : MonoBehaviour
         trackSelect.SetActive(false);
         carSelect.SetActive(true);
         bestTime.SetActive(false);
+        optionMenu.SetActive(false);
     }
     
 }
