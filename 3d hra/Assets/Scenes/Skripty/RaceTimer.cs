@@ -11,6 +11,7 @@ public class RaceTimer : MonoBehaviour
 
     void Start()
     {
+        // naètení nejlepšího èasu pøi startu závodu
         bestTime = PlayerPrefs.GetFloat("BestTime", 9999f);
     }
 
@@ -32,6 +33,7 @@ public class RaceTimer : MonoBehaviour
         lapTime = 0f;
     }
 
+    //TADY SE ULOŽÍ NEJLEPŠÍ ÈAS
     public void FinishRace()
     {
         running = false;
@@ -40,6 +42,7 @@ public class RaceTimer : MonoBehaviour
         {
             bestTime = totalTime;
             PlayerPrefs.SetFloat("BestTime", bestTime);
+            PlayerPrefs.Save(); //dùležité
         }
     }
 }

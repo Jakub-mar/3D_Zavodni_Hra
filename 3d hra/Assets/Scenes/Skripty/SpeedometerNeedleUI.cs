@@ -7,37 +7,38 @@ public class SpeedometerNeedleUI : MonoBehaviour
     [Header("Car")]
     public Rigidbody carRb;
 
-    [Header("UI")]
-    public RectTransform needlePivot;   // sem dej NeedlePivot
-    public RectTransform needle;        // sem dej Needle (jen kv�li d�lce, nen� nutn�)
-    public TextMeshProUGUI speedText;   // voliteln�
-
-    [Header("Speed")]
+    [Header("Needle")]
+    public RectTransform needlePivot;   // prázdný objekt ve středu
     public float maxSpeedKmh = 260f;
 
-    [Header("Needle Angles")]
-    public float minAngle = -135f;  // 0 km/h
-    public float maxAngle = 135f;   // maxSpeedKmh
+    [Header("Rotation Settings")]
+    public float minRotation = 135f;    // pozice 0 km/h
+    public float maxRotation = -135f;   // pozice max rychlosti
+    public float angleOffset = 0f;      // doladění podle sprite
 
-    [Header("Smoothing")]
-    public float smooth = 12f;
-
-    float currentAngle;
+    [Header("Text (optional)")]
+    public TMP_Text speedText;
 
     void Update()
     {
-        if (!carRb || !needlePivot) return;
+        if (carRb == null || needlePivot == null) return;
 
+        // rychlost v km/h
         float speedKmh = carRb.linearVelocity.magnitude * 3.6f;
-        speedKmh = Mathf.Clamp(speedKmh, 0f, maxSpeedKmh);
 
-        float t = speedKmh / maxSpeedKmh;
-        float targetAngle = Mathf.Lerp(minAngle, maxAngle, t);
+        // normalizace 0–1
+        float t = Mathf.InverseLerp(0f, maxSpeedKmh, speedKmh);
 
-        currentAngle = Mathf.Lerp(currentAngle, targetAngle, Time.deltaTime * smooth);
-        needlePivot.localRotation = Quaternion.Euler(0f, 0f, currentAngle);
+        // výpočet rotace
+        float rot = Mathf.Lerp(minRotation, maxRotation, t);
 
-        if (speedText)
-            speedText.text = Mathf.RoundToInt(speedKmh) + " km/h";
+        // OTOČÍ SE POUZE PIVOT
+        needlePivot.localRotation = Quaternion.Euler(0f, 0f, rot + angleOffset);
+
+        // volitelný text
+        if (speedText != null)
+        {
+            speedText.text = ((int)speedKmh).ToString() + " km/h";
+        }
     }
 }

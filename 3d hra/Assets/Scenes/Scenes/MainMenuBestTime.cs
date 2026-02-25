@@ -1,32 +1,27 @@
+using System;
 using TMPro;
 using UnityEngine;
 
 public class MainMenuBestTime : MonoBehaviour
 {
-    [SerializeField] private string bestTimeKey = "BEST_TIME_TRACK_1";
-    [SerializeField] private TMP_Text bestTimeText;
+    public TMP_Text bestTimeText;
 
-    private void OnEnable()
+    void OnEnable()
     {
         Refresh();
     }
 
     public void Refresh()
     {
-        if (!PlayerPrefs.HasKey(bestTimeKey))
+        float best = PlayerPrefs.GetFloat("BestTime", -1);
+
+        if (best < 0)
         {
-            bestTimeText.text = "Best time: --:--.---";
+            bestTimeText.text = "Best: --:--:---";
             return;
         }
 
-        float t = PlayerPrefs.GetFloat(bestTimeKey);
-        bestTimeText.text = "Best time: " + FormatTime(t);
-    }
-
-    private string FormatTime(float seconds)
-    {
-        int minutes = Mathf.FloorToInt(seconds / 60f);
-        float s = seconds % 60f;
-        return $"{minutes:00}:{s:00.000}";
+        TimeSpan t = TimeSpan.FromSeconds(best);
+        bestTimeText.text = "Best: " + t.ToString(@"mm\:ss\:fff");
     }
 }
