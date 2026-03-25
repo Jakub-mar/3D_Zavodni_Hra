@@ -3,6 +3,9 @@ using UnityEngine.UI;
 
 public class TrackSelection : MonoBehaviour
 {
+    [Header("UI Panels")]
+    public GameObject trackSelectPanel; // Panel s tratìmi v menu
+
     [Header("Track Buttons")]
     public Button[] trackButtons;
 
@@ -11,15 +14,22 @@ public class TrackSelection : MonoBehaviour
 
     void Start()
     {
+        // Na zaèátku menu schováme tlaèítko Start, dokud se nevybere tra
         startButton.SetActive(false);
 
+        // Nastavení listenerù pro tlaèítka tratí
         for (int i = 0; i < trackButtons.Length; i++)
         {
             int index = i;
-            Outline outline = trackButtons[i].GetComponent<Outline>();
-            if (outline != null) outline.enabled = false;
 
-            // DÙLEITÉ: Nejdøív odstraníme staré listenery, aby tam nebyly dvakrát
+            // --- PØIDÁNO: Vypnutí obrysu hned na zaèátku ---
+            Outline outline = trackButtons[i].GetComponent<Outline>();
+            if (outline != null)
+            {
+                outline.enabled = false;
+            }
+            // ----------------------------------------------
+
             trackButtons[i].onClick.RemoveAllListeners();
             trackButtons[i].onClick.AddListener(() => SelectTrack(index));
         }
@@ -27,21 +37,22 @@ public class TrackSelection : MonoBehaviour
 
     void SelectTrack(int index)
     {
-        //nastaví tra v GameManageru
+        // Uloíme index tratì do GameManageru
         GameManager.Instance.selectedTrack = index;
-
         startButton.SetActive(true);
 
+        // Zvıraznìní vybraného tlaèítka
         for (int i = 0; i < trackButtons.Length; i++)
         {
             Outline outline = trackButtons[i].GetComponent<Outline>();
-            outline.enabled = (i == index);
+            if (outline != null) outline.enabled = (i == index);
         }
     }
 
+    // Tato metoda se zavolá po kliknutí na "Start" pod vıbìrem tratí
     public void StartGame()
     {
-        //jen zavolá GameManager
-        GameManager.Instance.StartGame();
+        // Pøepneme do scény Garáe pøes GameManager
+        GameManager.Instance.GoToGarage();
     }
 }

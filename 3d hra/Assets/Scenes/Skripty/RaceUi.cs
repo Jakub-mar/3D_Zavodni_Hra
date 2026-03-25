@@ -21,14 +21,24 @@ public class RaceUi : MonoBehaviour
 
     void Update()
     {
-        // 1. Aktualizace kol (vlevo nahoøe)
-        lapCountText.text = /*"LAP " + */lapSystem.GetLap() + "/" + lapSystem.totalLaps;
+        // AUTOMATICKÉ PROPOJENÍ: Pokud UI ztratí auto, najde si ho znovu
+        if (lapSystem == null || !lapSystem.gameObject.activeInHierarchy)
+        {
+            lapSystem = FindFirstObjectByType<LapSystem>();
+        }
 
-        // 2. Aktuální èas kola (bìžící stopky)
+        if (raceTimer == null || !raceTimer.gameObject.activeInHierarchy)
+        {
+            raceTimer = FindFirstObjectByType<RaceTimer>();
+        }
+
+        // Pokud stále nic nemáme, nic nedìláme (ochrana pøed chybou)
+        if (lapSystem == null || raceTimer == null) return;
+
+        // Aktualizace textù
+        lapCountText.text = lapSystem.GetLap() + "/" + lapSystem.totalLaps;
         lapTimeText.text = FormatTime(raceTimer.lapTime);
-
-        // 3. Celkový èas závodu (stále roste)
-        totalTimeText.text = /*"TOTAL " +*/ FormatTime(raceTimer.totalTime);
+        totalTimeText.text = FormatTime(raceTimer.totalTime);
     }
 
     // Tuto funkci volá LapSystem pøi prùjezdu CP

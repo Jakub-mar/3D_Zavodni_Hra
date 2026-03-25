@@ -2,40 +2,36 @@
 public class LapSystem : MonoBehaviour
 {
     public int totalCheckpoints;
-    public int totalLaps = 5;
+    public int totalLaps = 1;
     public RaceTimer raceTimer;
     public RaceUi raceUi;
     public RaceFinishManager raceFinishManager;    
-
     private int currentCheckpoint = 0;
     private int currentLap = 1;
     private bool raceFinished = false;
+    public string racerName = "Auto 1";
+    public bool isPlayer = false;
 
     private void OnTriggerEnter(Collider other)
     {
         if (raceFinished) return;
 
-        // CHECKPOINT
+        // --- CHECKPOINT ---
         if (other.CompareTag("Checkpoint"))
         {
             CheckPoint cp = other.GetComponent<CheckPoint>();
-
-            // Kontrola pořadí checkpointù
             if (cp != null && cp.checkPointIndex == currentCheckpoint)
             {
-                // TADY JE ZMÌNA: Pøedáváme èas I index aktuálního checkpointu
                 raceUi.ShowCheckpointTime(raceTimer.lapTime, currentCheckpoint);
-
                 currentCheckpoint++;
             }
         }
 
-        // CÍL (FINISH)
+        // --- CÍL (FINISH) ---
         if (other.CompareTag("Finish"))
         {
             if (currentCheckpoint >= totalCheckpoints)
             {
-                // Zobrazíme cas v cíli jako poslední checkpoint (index rovný totalCheckpoints)
                 raceUi.ShowCheckpointTime(raceTimer.lapTime, totalCheckpoints);
 
                 if (currentLap < totalLaps)
@@ -46,10 +42,24 @@ public class LapSystem : MonoBehaviour
                 }
                 else
                 {
-                    raceFinishManager.FinishRace(raceTimer.totalTime);
+                    // KONEC ZÁVODU
+                    Debug.Log("ZÁVOD DOKONČEN!");
+                    FinishRace(); // Zavolá tvoji metodu pro stopnutí času
+
+                    if (raceFinishManager != null)
+                    {
+                        Debug.Log("Volám tabulku pro: " + racerName);
+                        // Tady posíláme jméno, které máš v proměnné racerName
+                        raceFinishManager.FinishRace(raceTimer.totalTime, racerName);
+                    }
+                    else
+                    {
+                        // POKUD SE TI VYPÍŠE TOHLE, NEMÁŠ PŘIŘAZENÝ MANAGER V INSPECTORU!
+                        Debug.LogError("CHYBA: V LapSystemu ti chybí přetažený RaceFinishManager!");
+                    }
                 }
             }
-            else
+            else if (currentCheckpoint > 0)
             {
                 Debug.Log("Chybí ti checkpointy! Máš: " + currentCheckpoint + "/" + totalCheckpoints);
             }

@@ -6,7 +6,6 @@ public class MenuManager : MonoBehaviour
     public GameObject mainMenu;
     public GameObject startMenu;
     public GameObject trackSelect;
-    public GameObject carSelect;
     public GameObject bestTime;
     public GameObject optionMenu;
     
@@ -15,13 +14,17 @@ public class MenuManager : MonoBehaviour
     {
         ShowMainMenu();
     }
-  
+    public void ShowCarSelect()
+    {
+        // Místo carSelect.SetActive(true) naèteme novou scénu
+        // Ujisti se, že se scéna v Build Settings jmenuje pøesnì "Garage"
+        SceneManager.LoadScene("CarSelect");
+    }
     public void ShowOptions()
     {
         mainMenu.SetActive(false);
         startMenu.SetActive(false);
         trackSelect.SetActive(false);
-        carSelect.SetActive(false);
         bestTime.SetActive(false);
         optionMenu.SetActive(true);
     }
@@ -30,7 +33,6 @@ public class MenuManager : MonoBehaviour
         mainMenu.SetActive(false);
         startMenu.SetActive(false);
         trackSelect.SetActive(false);
-        carSelect.SetActive(false);
         bestTime.SetActive(true);
         optionMenu.SetActive(false);
     }
@@ -40,7 +42,6 @@ public class MenuManager : MonoBehaviour
         mainMenu.SetActive(true);
         startMenu.SetActive(false);
         trackSelect.SetActive(false);
-        carSelect.SetActive(false);
         bestTime.SetActive(false);
             optionMenu.SetActive(false);
     }
@@ -50,7 +51,6 @@ public class MenuManager : MonoBehaviour
         mainMenu.SetActive(false);
         startMenu.SetActive(true);
         trackSelect.SetActive(false);
-        carSelect.SetActive(false);
         bestTime.SetActive(false);
         optionMenu.SetActive(false);
     }
@@ -60,19 +60,9 @@ public class MenuManager : MonoBehaviour
         mainMenu.SetActive(false);
         startMenu.SetActive(false);
         trackSelect.SetActive(true);
-        carSelect.SetActive(false);
         bestTime.SetActive(false);
             optionMenu.SetActive(false);
     }
 
-    public void ShowCarSelect()
-    {
-        mainMenu.SetActive(false);
-        startMenu.SetActive(false);
-        trackSelect.SetActive(false);
-        carSelect.SetActive(true);
-        bestTime.SetActive(false);
-        optionMenu.SetActive(false);
-    }
     
 }

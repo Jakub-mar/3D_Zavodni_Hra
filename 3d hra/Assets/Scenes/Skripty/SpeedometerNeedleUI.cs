@@ -21,21 +21,24 @@ public class SpeedometerNeedleUI : MonoBehaviour
 
     void Update()
     {
+        if (carRb == null || !carRb.gameObject.activeInHierarchy)
+        {
+            GameObject activeCar = GameObject.FindGameObjectWithTag("Player");
+            if (activeCar != null) carRb = activeCar.GetComponent<Rigidbody>();
+        }
+
         if (carRb == null || needlePivot == null) return;
 
-        // rychlost v km/h
         float speedKmh = carRb.linearVelocity.magnitude * 3.6f;
-
-        // normalizace 0–1
         float t = Mathf.InverseLerp(0f, maxSpeedKmh, speedKmh);
-
-        // výpočet rotace
         float rot = Mathf.Lerp(minRotation, maxRotation, t);
 
-        // OTOČÍ SE POUZE PIVOT
+        // Nastavení rotace
         needlePivot.localRotation = Quaternion.Euler(0f, 0f, rot + angleOffset);
 
-        // volitelný text
+        // DEBUG: Tohle smaž, až to bude fungovat
+        // Debug.Log("Rychlost: " + speedKmh + " | Rotace Z: " + (rot + angleOffset));
+
         if (speedText != null)
         {
             speedText.text = ((int)speedKmh).ToString() + " km/h";

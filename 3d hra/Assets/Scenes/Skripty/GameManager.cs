@@ -5,37 +5,32 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
 
-    public string[] sceneNames;
+    public string[] sceneNames; // Seznam závodních tratí
     public int selectedTrack = -1;
+    public int selectedCar = 0;
 
     void Awake()
     {
         if (Instance == null)
         {
             Instance = this;
-            //DontDestroyOnLoad(gameObject);
+            DontDestroyOnLoad(gameObject); // Pøenáší data mezi scénami
         }
-        //else Destroy(gameObject);
+        else { Destroy(gameObject); }
     }
 
-    public void SelectTrack(int index)
+    // Voláno z MainMenu po výbìru tratì
+    public void GoToGarage()
     {
-        selectedTrack = index;
+        SceneManager.LoadScene("CarSlecet"); // Název tvé nové scény s garáží
     }
 
-    public void StartGame()
+    // Voláno z Garáže po výbìru auta
+    public void LaunchRace()
     {
         if (selectedTrack >= 0 && selectedTrack < sceneNames.Length)
         {
-            Time.timeScale = 1f; // Vždy resetuj èas pøed naèítáním
-            SceneManager.LoadScene(sceneNames[selectedTrack]);
+            SceneManager.LoadScene(sceneNames[selectedTrack]); // Naète vybranou tra
         }
     }
-
-    public void ReturnToMainMenu()
-    {
-        selectedTrack = -1;
-        SceneManager.LoadScene("MainMenu");
-    }
-
 }
