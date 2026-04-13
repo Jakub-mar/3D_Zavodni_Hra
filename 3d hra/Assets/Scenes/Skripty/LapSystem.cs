@@ -50,7 +50,7 @@ public class LapSystem : MonoBehaviour
                     {
                         Debug.Log("Volám tabulku pro: " + racerName);
                         // Tady posíláme jméno, které máš v proměnné racerName
-                        raceFinishManager.FinishRace(raceTimer.totalTime, racerName);
+                        raceFinishManager.FinishRace(raceTimer.totalTime, this);
                     }
                     else
                     {

@@ -1,24 +1,24 @@
-using UnityEngine;
+Ôªøusing UnityEngine;
 using TMPro;
 using System.Collections.Generic;
 using System.Linq;
 
 public class RaceFinishManager : MonoBehaviour
 {
-    [Header("UI NastavenÌ")]
+    [Header("UI Nastaven√≠")]
     public GameObject leaderboardPanel;
     public TextMeshProUGUI resultsText;
 
-    // Seznam vöech z·vodnÌk˘
     private List<RacerStatus> allRacers = new List<RacerStatus>();
 
     [System.Serializable]
     public class RacerStatus
     {
         public string name;
-        public float time = 9999f; // V˝chozÌ Ëas pro ty, co jeötÏ nedojeli
+        public float time = 9999f;
         public bool hasFinished = false;
         public bool isPlayer = false;
+        public LapSystem lapSystem; //  reference na konkr√©tn√≠ auto
     }
 
     void Start()
@@ -27,82 +27,114 @@ public class RaceFinishManager : MonoBehaviour
         InitializeRacerList();
     }
 
-    // Tato metoda najde vöechna auta, i kdyû jsou na zaË·tku vypnut· (v Main Menu)
+    // Najde jen AKTIVN√ç auta ve sc√©nƒõ
     public void InitializeRacerList()
     {
         allRacers.Clear();
 
-        // KLÕ»OV¡ OPRAVA: FindObjectsInactive.Include najde i tvÈ "vypnutÈ" auto
-        LapSystem[] laps = Object.FindObjectsByType<LapSystem>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+        LapSystem[] laps = FindObjectsOfType<LapSystem>();
 
         foreach (var l in laps)
         {
             allRacers.Add(new RacerStatus
             {
                 name = l.racerName,
-                isPlayer = l.isPlayer
+                isPlayer = l.isPlayer,
+                lapSystem = l
             });
-            Debug.Log($"MANAGER: Registruji auto '{l.racerName}' (Hr·Ë: {l.isPlayer})");
+
+            Debug.Log($"Registruji auto: {l.racerName}");
         }
     }
-
-    // Metoda volan· z LapSystemu p¯i pr˘jezdu cÌlem
-    public void FinishRace(float finalTime, string name)
+    public void RefreshBestTimeDisplay()
     {
-        Debug.Log("MANAGER: Dojel " + name + " s Ëasem " + finalTime);
+        if (resultsText == null) return;
 
-        // Najdeme spr·vn˝ slot v seznamu (podle jmÈna a toho, ûe jeötÏ nem· zapsan˝ Ëas)
-        var racer = allRacers.Find(r => r.name == name && !r.hasFinished);
+        float best = PlayerPrefs.GetFloat("BestTime", 0);
 
-        if (racer != null)
+        // jen p≈ôegeneruje spodn√≠ ƒç√°st textu
+        string updated = resultsText.text;
+
+        int index = updated.IndexOf("Tv≈Øj nejlep≈°√≠ ƒças:");
+
+        if (index != -1)
+        {
+            updated = updated.Substring(0, index);
+        }
+
+        updated += $"<size=90%>Tv≈Øj nejlep≈°√≠ ƒças: {FormatTime(best)}</size>";
+
+        resultsText.text = updated;
+    }
+    bool AllFinished()
+    {
+        return allRacers.All(r => r.hasFinished);
+    }
+
+    //  VOL√Å SE Z LapSystemu
+    public void FinishRace(float finalTime, LapSystem sender)
+    {
+        Debug.Log("Dojel: " + sender.racerName + " ƒças: " + finalTime);
+
+        var racer = allRacers.Find(r => r.lapSystem == sender);
+
+        if (racer != null && !racer.hasFinished)
         {
             racer.time = finalTime;
             racer.hasFinished = true;
         }
-        else
-        {
-            Debug.LogWarning("MANAGER: Nem˘ûu najÌt voln˝ slot pro jmÈno: " + name);
-        }
 
-        // Zapneme tabulku a aktualizujeme text
-        leaderboardPanel.SetActive(true);
-        UpdateLeaderboardUI();
-
-        // Pokud to byl hr·Ë, uloûÌme jeho rekord
-        var currentPlayer = allRacers.Find(r => r.name == name && r.isPlayer);
-        if (currentPlayer != null)
+        // Ulo≈æit best time hr√°ƒçe
+        if (sender.isPlayer)
         {
             SaveBestTime(finalTime);
+        }
+
+        // Zobrazit a≈æ kdy≈æ v≈°ichni dojedou
+        if (AllFinished())
+        {
+            leaderboardPanel.SetActive(true);
+            UpdateLeaderboardUI();
         }
     }
 
     void UpdateLeaderboardUI()
     {
-        // Se¯adÌme vöechny podle Ëasu (nejrychlejöÌ naho¯e)
-        // Ti, co majÌ 9999f (nedojeli), budou automaticky na konci
         var sorted = allRacers.OrderBy(r => r.time).ToList();
 
-        string content = "<size=140%>V›SLEDKY Z¡VODU</size>\n\n";
+        string content = "<size=140%><b>V√ùSLEDKY Z√ÅVODU</b></size>\n\n";
 
         for (int i = 0; i < sorted.Count; i++)
         {
-            // Barvy pro stupnÏ vÌtÏz˘
-            string color = "white";
-            if (i == 0) color = "#FFD700"; // Zlat·
-            else if (i == 1) color = "#C0C0C0"; // St¯Ìbrn·
-            else if (i == 2) color = "#CD7F32"; // Bronzov·
-
             string timeStr = FormatTime(sorted[i].time);
 
-            // Pokud je to hr·Ë, zv˝raznÌme ho tuËnÏ a p¯id·me (TY)
-            string nameDisplay = sorted[i].isPlayer ? $"<b>{sorted[i].name} (TY)</b>" : sorted[i].name;
+            string nameDisplay = sorted[i].isPlayer
+                ? $"<b>{sorted[i].name} (TY)</b>"
+                : sorted[i].name;
 
-            content += $"<color={color}>{i + 1}. {nameDisplay} - {timeStr}</color>\n";
+            //  emoji
+            string prefix = "";
+            if (i == 0) prefix = "ü•á ";
+            else if (i == 1) prefix = "ü•à ";
+            else if (i == 2) prefix = "ü•â ";
+
+            string line = $"{prefix}{i + 1}. {nameDisplay}\n   Time: {timeStr}";
+
+            //  TOP 3 highlight
+            if (i == 0)
+                line = $"<mark=#FFD700AA><color=black>{line}</color></mark>";
+            else if (i == 1)
+                line = $"<mark=#C0C0C0AA><color=black>{line}</color></mark>";
+            else if (i == 2)
+                line = $"<mark=#CD7F32AA><color=black>{line}</color></mark>";
+            else
+                line = $"<color=white>{line}</color>";
+
+            content += line + "\n\n";
         }
 
-        // ZobrazenÌ nejlepöÌho Ëasu z PlayerPrefs
         float best = PlayerPrefs.GetFloat("BestTime", 0);
-        content += $"\n<size=80%>Tv˘j nejlepöÌ Ëas: {FormatTime(best)}</size>";
+        content += $"<size=90%>Tv≈Øj nejlep≈°√≠ ƒças: {FormatTime(best)}</size>";
 
         resultsText.text = content;
     }
@@ -110,12 +142,18 @@ public class RaceFinishManager : MonoBehaviour
     string FormatTime(float t)
     {
         if (t >= 9998) return "--:--:--";
-        return string.Format("{0:00}:{1:00}:{2:00}", (int)t / 60, (int)t % 60, (int)((t * 100) % 100));
+
+        return string.Format("{0:00}:{1:00}:{2:00}",
+            (int)t / 60,
+            (int)t % 60,
+            (int)((t * 100) % 100)
+        );
     }
 
     void SaveBestTime(float t)
     {
         float oldBest = PlayerPrefs.GetFloat("BestTime", 9999f);
+
         if (t < oldBest)
         {
             PlayerPrefs.SetFloat("BestTime", t);
