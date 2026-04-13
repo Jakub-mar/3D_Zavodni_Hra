@@ -1,34 +1,30 @@
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections;
 
 public class TrackSelection : MonoBehaviour
 {
-    [Header("UI Panels")]
-    public GameObject trackSelectPanel; // Panel s tratÏmi v menu
-
     [Header("Track Buttons")]
     public Button[] trackButtons;
 
     [Header("Start Button")]
     public GameObject startButton;
 
+    private Vector3 normalScale = Vector3.one;
+    private Vector3 hoverScale = new Vector3(1.05f, 1.05f, 1.05f);
+    private Vector3 selectedScale = new Vector3(1.15f, 1.15f, 1.15f);
+
+    private int selectedIndex = -1;
+
     void Start()
     {
-        // Na zaË·tku menu schov·me tlaËÌtko Start, dokud se nevybere traù
         startButton.SetActive(false);
 
-        // NastavenÌ listener˘ pro tlaËÌtka tratÌ
         for (int i = 0; i < trackButtons.Length; i++)
         {
             int index = i;
 
-            // --- PÿID¡NO: VypnutÌ obrysu hned na zaË·tku ---
-            Outline outline = trackButtons[i].GetComponent<Outline>();
-            if (outline != null)
-            {
-                outline.enabled = false;
-            }
-            // ----------------------------------------------
+            ResetButton(trackButtons[i]);
 
             trackButtons[i].onClick.RemoveAllListeners();
             trackButtons[i].onClick.AddListener(() => SelectTrack(index));
@@ -37,22 +33,87 @@ public class TrackSelection : MonoBehaviour
 
     void SelectTrack(int index)
     {
-        // UloûÌme index tratÏ do GameManageru
+        selectedIndex = index;
         GameManager.Instance.selectedTrack = index;
         startButton.SetActive(true);
 
-        // Zv˝raznÏnÌ vybranÈho tlaËÌtka
         for (int i = 0; i < trackButtons.Length; i++)
         {
-            Outline outline = trackButtons[i].GetComponent<Outline>();
-            if (outline != null) outline.enabled = (i == index);
+            if (i == index)
+                HighlightButton(trackButtons[i]);
+            else
+                ResetButton(trackButtons[i]);
         }
     }
 
-    // Tato metoda se zavol· po kliknutÌ na "Start" pod v˝bÏrem tratÌ
+    void HighlightButton(Button btn)
+    {
+        StopAllCoroutines();
+        StartCoroutine(ScaleTo(btn.transform, selectedScale));
+
+        Outline outline = btn.GetComponent<Outline>();
+        if (outline != null)
+        {
+            outline.enabled = true;
+            outline.effectColor = new Color(1f, 0.8f, 0f); // gold
+        }
+
+        Image img = btn.GetComponent<Image>();
+        if (img != null)
+        {
+            img.color = Color.white;
+        }
+    }
+
+    void ResetButton(Button btn)
+    {
+        StopAllCoroutines();
+        StartCoroutine(ScaleTo(btn.transform, normalScale));
+
+        Outline outline = btn.GetComponent<Outline>();
+        if (outline != null)
+        {
+            outline.enabled = false;
+        }
+
+        Image img = btn.GetComponent<Image>();
+        if (img != null)
+        {
+            img.color = new Color(0.9f, 0.9f, 0.9f);
+        }
+    }
+    public void OnHoverEnter(Button btn)
+    {
+        if (selectedIndex == -1 || btn != trackButtons[selectedIndex])
+        {
+            StartCoroutine(ScaleTo(btn.transform, hoverScale));
+        }
+    }
+
+    public void OnHoverExit(Button btn)
+    {
+        if (selectedIndex == -1 || btn != trackButtons[selectedIndex])
+        {
+            StartCoroutine(ScaleTo(btn.transform, normalScale));
+        }
+    }
+    IEnumerator ScaleTo(Transform target, Vector3 targetScale)
+    {
+        float time = 0f;
+        Vector3 startScale = target.localScale;
+
+        while (time < 0.2f)
+        {
+            target.localScale = Vector3.Lerp(startScale, targetScale, time / 0.2f);
+            time += Time.deltaTime;
+            yield return null;
+        }
+
+        target.localScale = targetScale;
+    }
+
     public void StartGame()
     {
-        // P¯epneme do scÈny Gar·ûe p¯es GameManager
         GameManager.Instance.GoToGarage();
     }
 }

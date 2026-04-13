@@ -11,17 +11,20 @@ public class AICarController : MonoBehaviour
     public WheelCollider RL;
     public WheelCollider RR;
 
-    public float maxTorque = 1500f;
+    public float maxTorque = 2500f;
     public float maxSteer = 30f;
-    public float brakeTorque = 3000f;
-    public float downforce = 100f;
+    public float brakeTorque = 3500f;
+    public float downforce = 200f;
+
+    [Header("Speed")]
+    public float maxSpeed = 200f;   // MAX 200 km/h
+    public float slowSpeed = 60f;   // minimální rychlost v zatáčce
 
     private Rigidbody rb;
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-        // Fix těžiště - tohle zabrání převracení
         rb.centerOfMass = new Vector3(0, -0.7f, 0.1f);
     }
 
@@ -32,45 +35,60 @@ public class AICarController : MonoBehaviour
         ApplySteer();
         Drive();
         CheckDistance();
+
         rb.AddForce(-transform.up * downforce * rb.linearVelocity.magnitude);
     }
 
     void ApplySteer()
     {
-        // Převedeme pozici waypointu na lokální prostor auta
         Vector3 relativeVector = transform.InverseTransformPoint(nodes[currentNode].position);
 
-        // Výpočet úhlu: x / magnitude nám dá hodnotu od -1 do 1
-        float newSteer = (relativeVector.x / relativeVector.magnitude) * maxSteer;
+        float speed = rb.linearVelocity.magnitude * 3.6f;
 
-        FL.steerAngle = newSteer;
-        FR.steerAngle = newSteer;
+        float steerLimit = Mathf.Lerp(maxSteer, 8f, speed / maxSpeed);
+
+        float steer = (relativeVector.x / relativeVector.magnitude) * steerLimit;
+
+        FL.steerAngle = steer;
+        FR.steerAngle = steer;
     }
 
     void Drive()
     {
-        float currentSpeed = rb.linearVelocity.magnitude * 3.6f;
+        float speed = rb.linearVelocity.magnitude * 3.6f;
 
-        // Pokud je waypoint víceméně před námi, jeď
-        if (currentSpeed < 100f)
+        Vector3 relativeVector = transform.InverseTransformPoint(nodes[currentNode].position);
+
+        // 0 = rovně, 1 = ostrá zatáčka
+        float turnFactor = Mathf.Clamp01(Mathf.Abs(relativeVector.x) / 10f);
+
+        float targetSpeed = Mathf.Lerp(maxSpeed, slowSpeed, turnFactor);
+
+        // PLYNULÉ ZRYCHLOVÁNÍ / BRZDĚNÍ
+        float speedError = targetSpeed - speed;
+
+        if (speedError > 5f)
         {
-            RL.motorTorque = maxTorque;
-            RR.motorTorque = maxTorque;
+            float torque = Mathf.Clamp(speedError * 50f, 0, maxTorque);
+
+            RL.motorTorque = torque;
+            RR.motorTorque = torque;
+
             RL.brakeTorque = 0;
             RR.brakeTorque = 0;
         }
-        else // Omezovač rychlosti
+        else
         {
             RL.motorTorque = 0;
             RR.motorTorque = 0;
-            RL.brakeTorque = 500;
-            RR.brakeTorque = 500;
+
+            RL.brakeTorque = brakeTorque * Mathf.Clamp01(-speedError / 20f);
+            RR.brakeTorque = brakeTorque * Mathf.Clamp01(-speedError / 20f);
         }
     }
 
     void CheckDistance()
     {
-        // Pokud jsme blízko waypointu, přepni na další
         if (Vector3.Distance(transform.position, nodes[currentNode].position) < 6f)
         {
             currentNode++;
