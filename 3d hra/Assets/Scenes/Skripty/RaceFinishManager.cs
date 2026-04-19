@@ -2,12 +2,17 @@
 using TMPro;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine.UI;
 
 public class RaceFinishManager : MonoBehaviour
 {
-    [Header("UI Nastavení")]
+    [Header("UI")]
     public GameObject leaderboardPanel;
-    public TextMeshProUGUI resultsText;
+    public Transform contentParent;
+    public GameObject rowPrefab;
+    public TextMeshProUGUI bestTimeText;
+    [Header("HUD")]
+    public GameObject hudCanvas; // sem dáš tachometr, speed, timer
 
     private List<RacerStatus> allRacers = new List<RacerStatus>();
 
@@ -15,24 +20,27 @@ public class RaceFinishManager : MonoBehaviour
     public class RacerStatus
     {
         public string name;
-        public float time = 9999f;
-        public bool hasFinished = false;
-        public bool isPlayer = false;
-        public LapSystem lapSystem; //  reference na konkrétní auto
+        public float time;
+        public bool hasFinished;
+        public bool isPlayer;
+        public LapSystem lapSystem;
     }
 
     void Start()
     {
         leaderboardPanel.SetActive(false);
         InitializeRacerList();
+        
     }
 
-    // Najde jen AKTIVNÍ auta ve scéně
     public void InitializeRacerList()
     {
         allRacers.Clear();
 
-        LapSystem[] laps = FindObjectsOfType<LapSystem>();
+        LapSystem[] laps = FindObjectsByType<LapSystem>(
+            FindObjectsInactive.Exclude,
+            FindObjectsSortMode.None
+        );
 
         foreach (var l in laps)
         {
@@ -40,114 +48,125 @@ public class RaceFinishManager : MonoBehaviour
             {
                 name = l.racerName,
                 isPlayer = l.isPlayer,
-                lapSystem = l
+                lapSystem = l,
+                time = 9999f,
+                hasFinished = false
             });
 
-            Debug.Log($"Registruji auto: {l.racerName}");
+            Debug.Log("Registruji: " + l.racerName + " player: " + l.isPlayer);
         }
     }
-    public void RefreshBestTimeDisplay()
-    {
-        if (resultsText == null) return;
 
-        float best = PlayerPrefs.GetFloat("BestTime", 0);
-
-        // jen přegeneruje spodní část textu
-        string updated = resultsText.text;
-
-        int index = updated.IndexOf("Tvůj nejlepší čas:");
-
-        if (index != -1)
-        {
-            updated = updated.Substring(0, index);
-        }
-
-        updated += $"<size=90%>Tvůj nejlepší čas: {FormatTime(best)}</size>";
-
-        resultsText.text = updated;
-    }
-    bool AllFinished()
-    {
-        return allRacers.All(r => r.hasFinished);
-    }
-
-    //  VOLÁ SE Z LapSystemu
     public void FinishRace(float finalTime, LapSystem sender)
     {
-        Debug.Log("Dojel: " + sender.racerName + " čas: " + finalTime);
+        Debug.Log("FINISH: " + sender.racerName + " time: " + finalTime);
 
-        var racer = allRacers.Find(r => r.lapSystem == sender);
+        var racer = allRacers.FirstOrDefault(r => r.lapSystem == sender);
 
-        if (racer != null && !racer.hasFinished)
+        // když se nenajde, přidáme ho
+        if (racer == null)
+        {
+            racer = new RacerStatus
+            {
+                name = sender.racerName,
+                isPlayer = sender.isPlayer,
+                lapSystem = sender,
+                time = finalTime,
+                hasFinished = true
+            };
+
+            allRacers.Add(racer);
+        }
+        else
         {
             racer.time = finalTime;
             racer.hasFinished = true;
         }
 
-        // Uložit best time hráče
+        // best time jen pro hráče
         if (sender.isPlayer)
         {
             SaveBestTime(finalTime);
         }
 
-        // Zobrazit až když všichni dojedou
         if (AllFinished())
         {
             leaderboardPanel.SetActive(true);
             UpdateLeaderboardUI();
+
+            if (hudCanvas != null)
+                hudCanvas.SetActive(false);
         }
+    }
+
+    bool AllFinished()
+    {
+        return allRacers.Count > 0 && allRacers.All(r => r.hasFinished);
     }
 
     void UpdateLeaderboardUI()
     {
-        var sorted = allRacers.OrderBy(r => r.time).ToList();
+        foreach (Transform child in contentParent)
+        {
+            Destroy(child.gameObject);
+        }
 
-        string content = "<size=140%><b>VÝSLEDKY ZÁVODU</b></size>\n\n";
+        var sorted = allRacers.OrderBy(r => r.time).ToList();
 
         for (int i = 0; i < sorted.Count; i++)
         {
-            string timeStr = FormatTime(sorted[i].time);
+            GameObject row = Instantiate(rowPrefab, contentParent);
 
-            string nameDisplay = sorted[i].isPlayer
-                ? $"<b>{sorted[i].name} (TY)</b>"
-                : sorted[i].name;
+            TextMeshProUGUI[] texts = row.GetComponentsInChildren<TextMeshProUGUI>();
+            texts[0].text = (i + 1).ToString();
+            texts[1].text = sorted[i].isPlayer ? "TY" : sorted[i].name;
+            texts[2].text = FormatTime(sorted[i].time);
 
-            //  emoji
-            string prefix = "";
-            if (i == 0) prefix = "🥇 ";
-            else if (i == 1) prefix = "🥈 ";
-            else if (i == 2) prefix = "🥉 ";
+            Image img = row.GetComponent<Image>();
 
-            string line = $"{prefix}{i + 1}. {nameDisplay}\n   Time: {timeStr}";
-
-            //  TOP 3 highlight
             if (i == 0)
-                line = $"<mark=#FFD700AA><color=black>{line}</color></mark>";
+                img.color = new Color(1f, 0.84f, 0f, 0.3f);
             else if (i == 1)
-                line = $"<mark=#C0C0C0AA><color=black>{line}</color></mark>";
+                img.color = new Color(0.75f, 0.75f, 0.75f, 0.3f);
             else if (i == 2)
-                line = $"<mark=#CD7F32AA><color=black>{line}</color></mark>";
+                img.color = new Color(0.8f, 0.5f, 0.2f, 0.3f);
             else
-                line = $"<color=white>{line}</color>";
+                img.color = new Color(1f, 1f, 1f, 0.05f);
 
-            content += line + "\n\n";
+            if (sorted[i].isPlayer)
+            {
+                texts[1].fontStyle = FontStyles.Bold;
+                row.transform.localScale = Vector3.one * 1.1f;
+            }
         }
 
-        float best = PlayerPrefs.GetFloat("BestTime", 0);
-        content += $"<size=90%>Tvůj nejlepší čas: {FormatTime(best)}</size>";
-
-        resultsText.text = content;
+        float best = PlayerPrefs.GetFloat("BestTime", 9999f);
+        bestTimeText.text = "Tvůj nejlepší čas: " + FormatTime(best);
     }
 
     string FormatTime(float t)
     {
-        if (t >= 9998) return "--:--:--";
+        if (t >= 9998f) return "--:--:--";
 
         return string.Format("{0:00}:{1:00}:{2:00}",
             (int)t / 60,
             (int)t % 60,
             (int)((t * 100) % 100)
         );
+    }
+
+    public void RefreshBestTimeDisplay()
+    {
+        if (bestTimeText == null) return;
+
+        if (!PlayerPrefs.HasKey("BestTime"))
+        {
+            bestTimeText.text = "Tvůj nejlepší čas: Žádný";
+            return;
+        }
+
+        float best = PlayerPrefs.GetFloat("BestTime");
+        bestTimeText.text = "Tvůj nejlepší čas: " + FormatTime(best);
     }
 
     void SaveBestTime(float t)

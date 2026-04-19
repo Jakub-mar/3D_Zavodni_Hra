@@ -2,22 +2,19 @@ using UnityEngine;
 
 public class BestTimeReset : MonoBehaviour
 {
-    [Header("Odkaz na leaderboard manager")]
-    public RaceFinishManager raceFinishManager;
-
-    // Tohle pøipojíš na Button OnClick
     public void ResetBestTime()
     {
-        // smaže uložený èas
         PlayerPrefs.DeleteKey("BestTime");
         PlayerPrefs.Save();
 
-        Debug.Log("Výsledky byly smazány!");
+        Debug.Log("Best time smazán!");
 
-        // aktualizace UI (pokud je otevøené)
-        if (raceFinishManager != null)
+        // najdi manager (pokud existuje)
+        RaceFinishManager manager = FindFirstObjectByType<RaceFinishManager>();
+
+        if (manager != null)
         {
-            raceFinishManager.RefreshBestTimeDisplay();
+            manager.RefreshBestTimeDisplay();
         }
     }
 }
