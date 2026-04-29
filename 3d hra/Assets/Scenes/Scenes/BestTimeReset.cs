@@ -14,7 +14,7 @@ public class BestTimeReset : MonoBehaviour
 
         if (manager != null)
         {
-            manager.RefreshBestTimeDisplay();
+            manager.RefreshBestTime();
         }
     }
 }

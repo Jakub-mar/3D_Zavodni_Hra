@@ -354,8 +354,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::LapSystem
   totalCheckpoints: 1
   totalLaps: 1
-  raceTimer: {fileID: 9415657}
-  raceUi: {fileID: 1557308316}
   raceFinishManager: {fileID: 703936663}
   racerName: Auto 1
   isPlayer: 1
@@ -1955,8 +1953,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::LapSystem
   totalCheckpoints: 0
   totalLaps: 0
-  raceTimer: {fileID: 0}
-  raceUi: {fileID: 0}
   raceFinishManager: {fileID: 703936663}
   racerName: Auto 4
   isPlayer: 0
@@ -4244,11 +4240,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::LapSystem
   totalCheckpoints: 0
   totalLaps: 0
-  raceTimer: {fileID: 0}
-  raceUi: {fileID: 0}
   raceFinishManager: {fileID: 703936663}
   racerName: Auto 3
   isPlayer: 0
+--- !u!114 &581660264
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 581660258}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4560b946394e91241aa32e5624c8d4d1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RaceTimer
+  lapTime: 0
+  totalTime: 0
+  lastCheckpointTime: 0
+  bestTime: 0
 --- !u!1001 &603467848
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -11247,6 +11257,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 6902319263003682225, guid: 713764ce0660bc34f9d7bec190dc355b, type: 3}
       insertIndex: -1
       addedObject: {fileID: 581660263}
+    - targetCorrespondingSourceObject: {fileID: 6902319263003682225, guid: 713764ce0660bc34f9d7bec190dc355b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 581660264}
   m_SourcePrefab: {fileID: 100100000, guid: 713764ce0660bc34f9d7bec190dc355b, type: 3}
 --- !u!1 &1652463071 stripped
 GameObject:
@@ -14511,8 +14524,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::LapSystem
   totalCheckpoints: 1
   totalLaps: 1
-  raceTimer: {fileID: 2003404688}
-  raceUi: {fileID: 1557308316}
   raceFinishManager: {fileID: 703936663}
   racerName: Auto 1
   isPlayer: 1
@@ -15605,8 +15616,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::LapSystem
   totalCheckpoints: 1
   totalLaps: 1
-  raceTimer: {fileID: 7495443278609099117}
-  raceUi: {fileID: 1557308316}
   raceFinishManager: {fileID: 703936663}
   racerName: Auto 2
   isPlayer: 0

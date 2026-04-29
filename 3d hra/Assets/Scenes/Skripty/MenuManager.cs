@@ -8,7 +8,9 @@ public class MenuManager : MonoBehaviour
     public GameObject trackSelect;
     public GameObject bestTime;
     public GameObject optionMenu;
-    
+    public GameObject playerProfilePanel;
+    public GameObject casePanel;
+
 
     void Start()
     {
@@ -27,6 +29,7 @@ public class MenuManager : MonoBehaviour
         trackSelect.SetActive(false);
         bestTime.SetActive(false);
         optionMenu.SetActive(true);
+        playerProfilePanel.SetActive(false);
     }
     public void ShowBestTime()
     {
@@ -35,6 +38,7 @@ public class MenuManager : MonoBehaviour
         trackSelect.SetActive(false);
         bestTime.SetActive(true);
         optionMenu.SetActive(false);
+        playerProfilePanel.SetActive(false);
     }
     public void ShowMainMenu()
     {
@@ -44,6 +48,7 @@ public class MenuManager : MonoBehaviour
         trackSelect.SetActive(false);
         bestTime.SetActive(false);
             optionMenu.SetActive(false);
+        playerProfilePanel.SetActive(false);
     }
 
     public void ShowStartMenu()
@@ -53,16 +58,37 @@ public class MenuManager : MonoBehaviour
         trackSelect.SetActive(false);
         bestTime.SetActive(false);
         optionMenu.SetActive(false);
+        playerProfilePanel.SetActive(false);
     }
 
     public void ShowTrackSelect()
     {
         mainMenu.SetActive(false);
-        startMenu.SetActive(false);
+        startMenu.SetActive(false); 
         trackSelect.SetActive(true);
         bestTime.SetActive(false);
             optionMenu.SetActive(false);
+        playerProfilePanel.SetActive(false);
+    }
+    public void ShowPlayerProfile()
+    {
+        mainMenu.SetActive(false);
+        startMenu.SetActive(false);
+        trackSelect.SetActive(false);
+        bestTime.SetActive(false);
+        optionMenu.SetActive(false);
+
+        playerProfilePanel.SetActive(true);
+        casePanel.SetActive(false);
+    }
+    public void OpenCasePanel()
+    {
+        casePanel.SetActive(true);
     }
 
-    
+    public void CloseCasePanel()
+    {
+        casePanel.SetActive(false);
+    }
+
 }
