@@ -14,6 +14,7 @@ public class CaseOpening : MonoBehaviour
 
     private bool isSpinning = false;
     private Vector2 startPosition;
+    public int casePrice = 15;
 
     void Start()
     {
@@ -29,7 +30,10 @@ public class CaseOpening : MonoBehaviour
     {
         if (isSpinning) return;
 
-        // "Resetuje" náhodu pokaždé jinak, aby nepadala stejná auta
+        // kontrola bodù
+        if (!PlayerProfile.instance.SpendPoints(casePrice))
+            return;
+
         Random.InitState(System.Environment.TickCount);
 
         StartCoroutine(SpinRoutine());

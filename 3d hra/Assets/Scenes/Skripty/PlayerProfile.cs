@@ -12,6 +12,7 @@ public class PlayerProfile : MonoBehaviour
 {
     public int points;
     public TextMeshProUGUI pointsText;
+    public static PlayerProfile instance;
 
     private string savePath;
 
@@ -22,9 +23,26 @@ public class PlayerProfile : MonoBehaviour
         Load();      //  naète uložené body
         UpdateUI();
     }
+    void Update()
+    {
+        // DEV CHEAT
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            AddPoints(100);
+            Debug.Log("DEV: Pøidáno 100 bodù");
+        }
+    }
     void Awake()
     {
-        DontDestroyOnLoad(gameObject);
+        if (instance == null)
+        {
+            instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
 
     public void AddPoints(int amount)
@@ -65,6 +83,23 @@ public class PlayerProfile : MonoBehaviour
         else
         {
             points = 0;
+        }
+    }
+    public bool SpendPoints(int amount)
+    {
+        if (points >= amount)
+        {
+            points -= amount;
+
+            Save();
+            UpdateUI();
+
+            return true;
+        }
+        else
+        {
+            Debug.Log("Nemáš dost bodù!");
+            return false;
         }
     }
 }
