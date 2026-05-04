@@ -5717,7 +5717,7 @@ GameObject:
   - component: {fileID: 1194666069}
   - component: {fileID: 1194666068}
   m_Layer: 5
-  m_Name: Sport Car_39
+  m_Name: CarImage (17)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6079,7 +6079,7 @@ GameObject:
   - component: {fileID: 1267973935}
   - component: {fileID: 1267973934}
   m_Layer: 5
-  m_Name: Sports Car
+  m_Name: CarImage (15)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8244,7 +8244,7 @@ GameObject:
   - component: {fileID: 1722437953}
   - component: {fileID: 1722437952}
   m_Layer: 5
-  m_Name: Sports Car
+  m_Name: CarImage (16)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9266,7 +9266,7 @@ GameObject:
   - component: {fileID: 1868763501}
   - component: {fileID: 1868763500}
   m_Layer: 5
-  m_Name: Sport Car_39
+  m_Name: CarImage (18)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9341,7 +9341,7 @@ GameObject:
   - component: {fileID: 1903830574}
   - component: {fileID: 1903830573}
   m_Layer: 5
-  m_Name: Sports Car
+  m_Name: CarImage (19)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

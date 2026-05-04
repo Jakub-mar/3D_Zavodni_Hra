@@ -1,27 +1,31 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using System.Collections.Generic;
 
 public class CaseOpening : MonoBehaviour
 {
     [Header("UI Reference")]
-    public RectTransform content;       // Pøiøaï objekt "Content"
-    public Button openButton;         // Pøiøaï tlaèítko "Open"
+    public RectTransform content;
+    public Button openButton;
 
-    [Header("Nastavení toèení")]
-    public float spinDuration = 8f;    // Délka toèení (8 sekund pro napìtí)
-    public float itemWidth = 200f;     // Šíøka tvých obrázkù aut
+    [Header("Nastavení")]
+    public float spinDuration = 8f;
+    public float itemWidth = 160f;
+    public int sequenceLength = 60;
 
     private bool isSpinning = false;
-    private Vector2 startPosition;
-    public int casePrice = 15;
+    private List<GameObject> carPool = new List<GameObject>();
 
     void Start()
     {
-        // Uložíme si poèáteèní pozici (vlevo)
-        startPosition = content.anchoredPosition;
+        // Uložíme vzory aut a schováme je
+        foreach (Transform child in content)
+        {
+            carPool.Add(child.gameObject);
+            child.gameObject.SetActive(false);
+        }
 
-        // Pokud zapomeneš pøiøadit tlaèítko v inspektoru, zkusíme ho najít
         if (openButton != null)
             openButton.onClick.AddListener(OpenCase);
     }
@@ -30,11 +34,9 @@ public class CaseOpening : MonoBehaviour
     {
         if (isSpinning) return;
 
-        // kontrola bodù
-        if (!PlayerProfile.instance.SpendPoints(casePrice))
+        // Kontrola bodù (pøedpokládám tvùj PlayerProfile skript)
+        if (PlayerProfile.instance != null && !PlayerProfile.instance.SpendPoints(15))
             return;
-
-        Random.InitState(System.Environment.TickCount);
 
         StartCoroutine(SpinRoutine());
     }
@@ -44,49 +46,64 @@ public class CaseOpening : MonoBehaviour
         isSpinning = true;
         if (openButton != null) openButton.interactable = false;
 
-        // 1. Reset pozice na zaèátek
-        content.anchoredPosition = startPosition;
+        // Vyèištìní starých klonù
+        foreach (Transform child in content)
+        {
+            if (!carPool.Contains(child.gameObject)) Destroy(child.gameObject);
+        }
 
-        // 2. Výpoèet mezer a cíle
-        float spacing = 0;
-        HorizontalLayoutGroup layout = content.GetComponent<HorizontalLayoutGroup>();
-        if (layout != null) spacing = layout.spacing;
+        yield return new WaitForEndOfFrame();
+        content.anchoredPosition = Vector2.zero;
 
+        // Generování øady
+        List<GameObject> activeSequence = new List<GameObject>();
+        for (int i = 0; i < sequenceLength; i++)
+        {
+            GameObject randomPrefab = carPool[Random.Range(0, carPool.Count)];
+            GameObject newIcon = Instantiate(randomPrefab, content);
+            newIcon.SetActive(true);
+
+            RectTransform rt = newIcon.GetComponent<RectTransform>();
+            rt.localScale = Vector3.one;
+            activeSequence.Add(newIcon);
+        }
+
+        float spacing = content.GetComponent<HorizontalLayoutGroup>().spacing;
         float totalStep = itemWidth + spacing;
-        int totalItems = content.childCount;
 
-        // VYBÍRÁME VÍTÌZE:
-        // Míøíme na náhodné auto mezi 15. a pøedposledním v seznamu
-        // (Ujisti se, že máš v Content aspoò 25-30 aut!)
-        int winnerIndex = Random.Range(15, totalItems - 2);
-
+        int winnerIndex = sequenceLength - 5;
         float targetX = winnerIndex * totalStep;
+        float randomOffset = Random.Range(-itemWidth / 3f, itemWidth / 3f);
+        Vector2 targetPos = new Vector2(-(targetX + randomOffset), 0);
 
-        // Náhodný offset (èára nebude vždycky pøesnì na støed auta)
-        float randomOffset = Random.Range(-itemWidth / 2.5f, itemWidth / 2.5f);
-        Vector2 targetPos = new Vector2(-(targetX + randomOffset), startPosition.y);
-
-        // 3. TOÈENÍ (Animace)
+        // Toèení
         float elapsed = 0;
         while (elapsed < spinDuration)
         {
             elapsed += Time.deltaTime;
             float t = elapsed / spinDuration;
-
-            // CS2 Easing (Quintic Ease Out)
-            // Zaène velmi rychle a ke konci se línì doplazí k cíli
             t = 1f - Mathf.Pow(1f - t, 5f);
-
-            content.anchoredPosition = Vector2.Lerp(startPosition, targetPos, t);
+            content.anchoredPosition = Vector2.Lerp(Vector2.zero, targetPos, t);
             yield return null;
         }
 
-        // 4. KONEC
+        // --- ULOŽENÍ VÝHRY ---
+        string winnerName = activeSequence[winnerIndex].name.Replace("(Clone)", "");
+        SaveWin(winnerName);
+
         isSpinning = false;
         if (openButton != null) openButton.interactable = true;
+        Debug.Log("<color=gold>VYHRÁL JSI:</color> " + winnerName);
+    }
 
-        // Zjistíme, jaké auto je pod èárou
-        string winnerName = content.GetChild(winnerIndex).name;
-        Debug.Log("<color=gold>GRATULACE!</color> Vyhrál jsi: " + winnerName);
+    void SaveWin(string carName)
+    {
+        string currentCars = PlayerPrefs.GetString("OwnedCars", "");
+        if (!currentCars.Contains(carName))
+        {
+            string newData = string.IsNullOrEmpty(currentCars) ? carName : currentCars + "," + carName;
+            PlayerPrefs.SetString("OwnedCars", newData);
+            PlayerPrefs.Save();
+        }
     }
 }

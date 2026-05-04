@@ -1,15 +1,58 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System.Collections.Generic;
+using UnityEngine.UI;
 
 public class GarageManager : MonoBehaviour
 {
-    [Header("Car Models in Garage")]
-    public GameObject[] cars;
-    private int currentIndex = 0;
+    [Header("Garáž Nastavení")]
+    public GameObject[] cars;         // Seznam všech tvých modelù aut
+    public Button startRaceButton;    // Tlaèítko pro spuštìní závodu
+    public int startCarsCount = 3;    // KOLIK aut má hráè od zaèátku (napø. první 3)
 
-    void OnEnable()
+    private int currentIndex = 0;
+    private List<string> ownedCars = new List<string>();
+
+    void Start()
     {
-        ShowCar(0); // Pøi zapnutí garáže ukáže první auto
+        LoadOwnedCars();
+        ShowCar(0);
+    }
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            ResetInventory();
+        }
+    }
+
+    void LoadOwnedCars()
+    {
+        ownedCars.Clear();
+
+        // 1. AUTOMATICKÉ ODEMÈENÍ STARTOVNÍCH AUT
+        // Projde prvních X aut v poli 'cars' a pøidá je do seznamu vlastnìných
+        for (int i = 0; i < startCarsCount; i++)
+        {
+            if (i < cars.Length)
+            {
+                ownedCars.Add(cars[i].name);
+            }
+        }
+
+        // 2. NAÈTENÍ VYHRANÝCH AUT Z DISKU
+        if (PlayerPrefs.HasKey("OwnedCars"))
+        {
+            string data = PlayerPrefs.GetString("OwnedCars");
+            string[] splitData = data.Split(',');
+            foreach (string s in splitData)
+            {
+                if (!string.IsNullOrEmpty(s) && !ownedCars.Contains(s))
+                {
+                    ownedCars.Add(s);
+                }
+            }
+        }
     }
 
     public void NextCar()
@@ -27,22 +70,53 @@ public class GarageManager : MonoBehaviour
 
     private void ShowCar(int index)
     {
+        // Aktivuje jen vybraný model
         for (int i = 0; i < cars.Length; i++)
         {
             cars[i].SetActive(i == index);
         }
-        // Uložíme volbu do GameManageru
-        GameManager.Instance.selectedCar = index;
+
+        // KONTROLA VLASTNICTVÍ
+        // Tlaèítko Start se zapne jen pokud je jméno v seznamu ownedCars
+        bool isOwned = ownedCars.Contains(cars[index].name);
+
+        if (startRaceButton != null)
+        {
+            startRaceButton.interactable = isOwned;
+
+            // VOLITELNÉ: Zmìna barvy tlaèítka, když je zamèeno
+            startRaceButton.GetComponentInChildren<Text>().text = isOwned ? "START" : "ZAMÈENO";
+        }
+
+        if (isOwned && GameManager.Instance != null)
+        {
+            GameManager.Instance.selectedCar = index;
+        }
     }
 
-    // Tuto funkci nastav v OnClick u tlaèítka "START HRY" v garáži
     public void ConfirmSelectionAndStart()
     {
-        GameManager.Instance.LaunchRace();
+        if (GameManager.Instance != null)
+            GameManager.Instance.LaunchRace();
     }
-    public void ReturnToMenu()
+    // Funkce pro smazání všech vyhraných aut
+    public void ResetInventory()
     {
-        // Naète zpìt hlavní menu
-        SceneManager.LoadScene("MainMenu");
+        // Smaže jen seznam vlastnìných aut z disku
+        PlayerPrefs.DeleteKey("OwnedCars");
+        PlayerPrefs.Save();
+
+        // Okamžitì aktualizuje seznam v bìžící høe
+        LoadOwnedCars();
+
+        // Vrátí zobrazení na první auto, aby se refreshlo tlaèítko Start
+        currentIndex = 0;
+        ShowCar(currentIndex);
+
+        Debug.Log("<color=red>Inventáø byl smazán!</color> Teï máš zase jen startovní auta.");
+    }
+    public void GoBackToTrackSelect()
+    {
+        SceneManager.LoadScene("MainMenu"); // uprav podle názvu tvý scény
     }
 }
