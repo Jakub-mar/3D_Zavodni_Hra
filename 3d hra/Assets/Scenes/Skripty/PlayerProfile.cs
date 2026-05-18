@@ -6,10 +6,18 @@ using System.IO;
 public class PlayerData
 {
     public int points;
+    public int races;
+    public int wins;
 }
 
 public class PlayerProfile : MonoBehaviour
 {
+
+    public int races;
+    public int wins;
+
+    public TextMeshProUGUI racesText;
+    public TextMeshProUGUI winsText;
     public int points;
     public TextMeshProUGUI pointsText;
     public static PlayerProfile instance;
@@ -57,12 +65,20 @@ public class PlayerProfile : MonoBehaviour
     {
         if (pointsText != null)
             pointsText.text = "Body: " + points;
+
+        if (racesText != null)
+            racesText.text = "Races: " + races;
+
+        if (winsText != null)
+            winsText.text = "Wins: " + wins;
     }
 
     void Save()
     {
         PlayerData data = new PlayerData();
         data.points = points;
+        data.races = races;
+        data.wins = wins;
 
         string json = JsonUtility.ToJson(data, true);
         File.WriteAllText(savePath, json);
@@ -77,12 +93,16 @@ public class PlayerProfile : MonoBehaviour
             string json = File.ReadAllText(savePath);
             PlayerData data = JsonUtility.FromJson<PlayerData>(json);
             points = data.points;
+            races = data.races;
+            wins = data.wins;
 
-            Debug.Log("Naèteno: " + points);
+            Debug.Log("Naèteno");
         }
         else
         {
             points = 0;
+            races = 0;
+            wins = 0;
         }
     }
     public bool SpendPoints(int amount)
@@ -101,5 +121,15 @@ public class PlayerProfile : MonoBehaviour
             Debug.Log("Nemáš dost bodù!");
             return false;
         }
+    }
+    public void AddRace(bool win)
+    {
+        races++;
+
+        if (win)
+            wins++;
+
+        Save();
+        UpdateUI();
     }
 }

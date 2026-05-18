@@ -34,6 +34,8 @@ public class RaceFinishManager : MonoBehaviour
     {
         leaderboardPanel.SetActive(false);
         playerProfile = FindFirstObjectByType<PlayerProfile>();
+
+       
     }
 
     // REGISTRACE AUT (jen aktivní)
@@ -165,6 +167,9 @@ public class RaceFinishManager : MonoBehaviour
             if (sorted[i].isPlayer)
             {
                 playerProfile.AddPoints(points);
+
+                bool isWinner = (i == 0); // první místo
+                playerProfile.AddRace(isWinner);
             }
         }
     }

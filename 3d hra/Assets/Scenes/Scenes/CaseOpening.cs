@@ -5,6 +5,7 @@ using System.Collections.Generic;
 
 public class CaseOpening : MonoBehaviour
 {
+    
     [Header("UI Reference")]
     public RectTransform content;
     public Button openButton;
@@ -19,6 +20,7 @@ public class CaseOpening : MonoBehaviour
 
     void Start()
     {
+        
         // Uložíme vzory aut a schováme je
         foreach (Transform child in content)
         {
@@ -43,6 +45,8 @@ public class CaseOpening : MonoBehaviour
 
     IEnumerator SpinRoutine()
     {
+   
+
         isSpinning = true;
         if (openButton != null) openButton.interactable = false;
 
@@ -65,10 +69,11 @@ public class CaseOpening : MonoBehaviour
 
             RectTransform rt = newIcon.GetComponent<RectTransform>();
             rt.localScale = Vector3.one;
+            rt.sizeDelta = new Vector2(itemWidth, itemWidth);
+            rt.anchoredPosition = new Vector2(i * (itemWidth + 10f), 0);
             activeSequence.Add(newIcon);
         }
-
-        float spacing = content.GetComponent<HorizontalLayoutGroup>().spacing;
+        float spacing = 10f;
         float totalStep = itemWidth + spacing;
 
         int winnerIndex = sequenceLength - 5;
@@ -94,6 +99,8 @@ public class CaseOpening : MonoBehaviour
         isSpinning = false;
         if (openButton != null) openButton.interactable = true;
         Debug.Log("<color=gold>VYHRÁL JSI:</color> " + winnerName);
+
+       
     }
 
     void SaveWin(string carName)
