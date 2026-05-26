@@ -68,7 +68,12 @@ public class CarSelector : MonoBehaviour
             return;
         }
 
-        auta[unlockedIndexes[currentIndex]].SetActive(true);
+        int realIndex = unlockedIndexes[currentIndex];
+
+        auta[realIndex].SetActive(true);
+
+        // ULOŽÍ SPRÁVNÉ AUTO
+        GameManager.Instance.selectedCar = realIndex;
     }
 
     public void DalsiAuto()

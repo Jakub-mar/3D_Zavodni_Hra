@@ -13,15 +13,39 @@ public class MainMenuBestTime : MonoBehaviour
 
     public void Refresh()
     {
-        float best = PlayerPrefs.GetFloat("BestTime", -1);
+        string text = "BEST TIMES\n\n";
 
-        if (best < 0)
+        for (int i = 1; i <= 3; i++)
         {
-            bestTimeText.text = "Best: --:--:---";
-            return;
+            float best = PlayerPrefs.GetFloat("BestTime" + i, -1);
+
+            string line;
+
+            if (best < 0)
+            {
+                line = i + ". --:--:---";
+            }
+            else
+            {
+                TimeSpan t = TimeSpan.FromSeconds(best);
+                line = i + ". " + t.ToString(@"mm\:ss\:fff");
+            }
+
+            // BARVY
+            if (i == 1)
+            {
+                text += "<color=#FFD700><size=120%><b>" + line + "</b></size></color>\n";
+            }
+            else if (i == 2)
+            {
+                text += "<color=#C0C0C0>" + line + "</color>\n";
+            }
+            else
+            {
+                text += "<color=#CD7F32>" + line + "</color>\n";
+            }
         }
 
-        TimeSpan t = TimeSpan.FromSeconds(best);
-        bestTimeText.text = "Best: " + t.ToString(@"mm\:ss\:fff");
+        bestTimeText.text = text;
     }
 }

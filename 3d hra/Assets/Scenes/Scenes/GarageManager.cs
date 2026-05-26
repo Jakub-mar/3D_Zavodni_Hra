@@ -57,14 +57,31 @@ public class GarageManager : MonoBehaviour
 
     public void NextCar()
     {
-        currentIndex = (currentIndex + 1) % cars.Length;
+        int startIndex = currentIndex;
+
+        do
+        {
+            currentIndex = (currentIndex + 1) % cars.Length;
+
+        } while (!ownedCars.Contains(cars[currentIndex].name) && currentIndex != startIndex);
+
         ShowCar(currentIndex);
     }
 
+
     public void PreviousCar()
     {
-        currentIndex--;
-        if (currentIndex < 0) currentIndex = cars.Length - 1;
+        int startIndex = currentIndex;
+
+        do
+        {
+            currentIndex--;
+
+            if (currentIndex < 0)
+                currentIndex = cars.Length - 1;
+
+        } while (!ownedCars.Contains(cars[currentIndex].name) && currentIndex != startIndex);
+
         ShowCar(currentIndex);
     }
 
@@ -97,7 +114,12 @@ public class GarageManager : MonoBehaviour
     public void ConfirmSelectionAndStart()
     {
         if (GameManager.Instance != null)
+        {
+            // TENTO ØÁDEK PØIDEJ: Pro jistotu uloží pøesnì to auto, které máš zrovna zobrazené
+            GameManager.Instance.selectedCar = currentIndex;
+
             GameManager.Instance.LaunchRace();
+        }
     }
     // Funkce pro smazání všech vyhraných aut
     public void ResetInventory()

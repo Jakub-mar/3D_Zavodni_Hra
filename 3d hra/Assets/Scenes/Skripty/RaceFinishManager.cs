@@ -133,23 +133,51 @@ public class RaceFinishManager : MonoBehaviour
 
     void SaveBestTime(float t)
     {
-        float best = PlayerPrefs.GetFloat("BestTime", 9999f);
+        List<float> times = new List<float>();
 
-        if (t < best)
+        // načtení starých časů
+        for (int i = 1; i <= 3; i++)
         {
-            PlayerPrefs.SetFloat("BestTime", t);
-            PlayerPrefs.Save();
+            float saved = PlayerPrefs.GetFloat("BestTime" + i, 9999f);
+
+            if (saved < 9999f)
+                times.Add(saved);
         }
+
+        // přidání nového času
+        times.Add(t);
+
+        // seřazení
+        times = times.OrderBy(x => x).Take(3).ToList();
+
+        // uložení TOP 3
+        for (int i = 0; i < times.Count; i++)
+        {
+            PlayerPrefs.SetFloat("BestTime" + (i + 1), times[i]);
+        }
+
+        PlayerPrefs.Save();
     }
 
     public void RefreshBestTime()
     {
-        float best = PlayerPrefs.GetFloat("BestTime", 9999f);
+        string text = "BEST TIMES\n\n";
 
-        if (best >= 9998f)
-            bestTimeText.text = "Tvůj nejlepší čas: Žádný";
-        else
-            bestTimeText.text = "Tvůj nejlepší čas: " + FormatTime(best);
+        for (int i = 1; i <= 3; i++)
+        {
+            float best = PlayerPrefs.GetFloat("BestTime" + i, -1);
+
+            if (best < 0)
+            {
+                text += i + ". --:--:---\n";
+            }
+            else
+            {
+                text += i + ". " + FormatTime(best) + "\n";
+            }
+        }
+
+        bestTimeText.text = text;
     }
 
     void GivePointsToPlayer(List<Racer> sorted)

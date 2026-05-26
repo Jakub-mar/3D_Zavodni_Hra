@@ -12,6 +12,7 @@ public class CarSpawner : MonoBehaviour
 
     void Start()
     {
+        Debug.Log("CarSpawner hlásí: GameManager nám posílá index auta: " + GameManager.Instance.selectedCar);
         // 1. Zjistíme z GameManageru, co jsme vybrali
         int selectedIndex = GameManager.Instance.selectedCar;
 
