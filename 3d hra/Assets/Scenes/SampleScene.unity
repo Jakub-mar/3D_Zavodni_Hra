@@ -15355,6 +15355,22 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8141761756812725292, guid: c656b3529a02d574a8df7a7eb0197d59, type: 3}
+      propertyPath: maxSpeed
+      value: 240
+      objectReference: {fileID: 0}
+    - target: {fileID: 8141761756812725292, guid: c656b3529a02d574a8df7a7eb0197d59, type: 3}
+      propertyPath: downforce
+      value: 80
+      objectReference: {fileID: 0}
+    - target: {fileID: 8141761756812725292, guid: c656b3529a02d574a8df7a7eb0197d59, type: 3}
+      propertyPath: brakeTorque
+      value: 6000
+      objectReference: {fileID: 0}
+    - target: {fileID: 8141761756812725292, guid: c656b3529a02d574a8df7a7eb0197d59, type: 3}
+      propertyPath: motorTorque
+      value: 5500
+      objectReference: {fileID: 0}
     - target: {fileID: 8773635979505102604, guid: c656b3529a02d574a8df7a7eb0197d59, type: 3}
       propertyPath: gearText
       value: 
@@ -20845,9 +20861,17 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 604566815}
     - target: {fileID: 7187816201000598199, guid: 713764ce0660bc34f9d7bec190dc355b, type: 3}
+      propertyPath: maxSpeed
+      value: 200
+      objectReference: {fileID: 0}
+    - target: {fileID: 7187816201000598199, guid: 713764ce0660bc34f9d7bec190dc355b, type: 3}
       propertyPath: rearLeft
       value: 
       objectReference: {fileID: 997927940}
+    - target: {fileID: 7187816201000598199, guid: 713764ce0660bc34f9d7bec190dc355b, type: 3}
+      propertyPath: downforce
+      value: 200
+      objectReference: {fileID: 0}
     - target: {fileID: 7187816201000598199, guid: 713764ce0660bc34f9d7bec190dc355b, type: 3}
       propertyPath: frontLeft
       value: 

@@ -161,23 +161,16 @@ public class RaceFinishManager : MonoBehaviour
 
     public void RefreshBestTime()
     {
-        string text = "BEST TIMES\n\n";
+        float best = PlayerPrefs.GetFloat("BestTime1", -1);
 
-        for (int i = 1; i <= 3; i++)
+        if (best < 0)
         {
-            float best = PlayerPrefs.GetFloat("BestTime" + i, -1);
-
-            if (best < 0)
-            {
-                text += i + ". --:--:---\n";
-            }
-            else
-            {
-                text += i + ". " + FormatTime(best) + "\n";
-            }
+            bestTimeText.text = "BEST TIME\n\n--:--:--";
         }
-
-        bestTimeText.text = text;
+        else
+        {
+            bestTimeText.text = "BEST TIME\n\n" + FormatTime(best);
+        }
     }
 
     void GivePointsToPlayer(List<Racer> sorted)
