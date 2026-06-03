@@ -19,6 +19,7 @@ public class AICarController : MonoBehaviour
     [Header("Speed")]
     public float maxSpeed = 200f;   // MAX 200 km/h
     public float slowSpeed = 60f;   // minimální rychlost v zatáčce
+    public float highSpeedSteer = 15f;
 
     private Rigidbody rb;
 
@@ -45,7 +46,7 @@ public class AICarController : MonoBehaviour
 
         float speed = rb.linearVelocity.magnitude * 3.6f;
 
-        float steerLimit = Mathf.Lerp(maxSteer, 8f, speed / maxSpeed);
+        float steerLimit = Mathf.Lerp(maxSteer, highSpeedSteer, speed / maxSpeed);
 
         float steer = (relativeVector.x / relativeVector.magnitude) * steerLimit;
 

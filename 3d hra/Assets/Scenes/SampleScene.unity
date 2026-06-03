@@ -433,7 +433,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BrakeSound
   carRb: {fileID: 9415655}
-  brakeSource: {fileID: 9415666}
+  brakeSource: {fileID: 9415662}
   brakeKey: 115
   minSpeedKmh: 10
 --- !u!82 &9415662
@@ -5700,7 +5700,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BrakeSound
   carRb: {fileID: 509300983}
-  brakeSource: {fileID: 509300977}
+  brakeSource: {fileID: 509300973}
   brakeKey: 115
   minSpeedKmh: 10
 --- !u!82 &509300973
@@ -7423,6 +7423,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d21d20bf7ec05774780ddbec0287231f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RaceFinishManager
+  trackID: 1
   leaderboardPanel: {fileID: 692660268}
   contentParent: {fileID: 1930440107}
   rowPrefab: {fileID: 8482656449633906224, guid: f707ecb207765e243a827a0b887b935d, type: 3}
@@ -16789,7 +16790,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BrakeSound
   carRb: {fileID: 1906709443}
-  brakeSource: {fileID: 1906709437}
+  brakeSource: {fileID: 1906709433}
   brakeKey: 115
   minSpeedKmh: 10
 --- !u!82 &1906709433
@@ -20907,6 +20908,10 @@ PrefabInstance:
     - target: {fileID: 7187816201000598199, guid: 713764ce0660bc34f9d7bec190dc355b, type: 3}
       propertyPath: reachDistance
       value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 7187816201000598199, guid: 713764ce0660bc34f9d7bec190dc355b, type: 3}
+      propertyPath: highSpeedSteer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 7187816201000598199, guid: 713764ce0660bc34f9d7bec190dc355b, type: 3}
       propertyPath: carLayer.m_Bits

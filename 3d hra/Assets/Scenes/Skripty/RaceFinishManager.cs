@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 public class RaceFinishManager : MonoBehaviour
 {
+    public int trackID = 1;
     [Header("UI")]
     public GameObject leaderboardPanel;
     public Transform contentParent;
@@ -138,7 +139,7 @@ public class RaceFinishManager : MonoBehaviour
         // načtení starých časů
         for (int i = 1; i <= 3; i++)
         {
-            float saved = PlayerPrefs.GetFloat("BestTime" + i, 9999f);
+            float saved = PlayerPrefs.GetFloat("Track" + trackID + "_BestTime" + i, 9999f);
 
             if (saved < 9999f)
                 times.Add(saved);
@@ -153,7 +154,10 @@ public class RaceFinishManager : MonoBehaviour
         // uložení TOP 3
         for (int i = 0; i < times.Count; i++)
         {
-            PlayerPrefs.SetFloat("BestTime" + (i + 1), times[i]);
+            PlayerPrefs.SetFloat(
+                "Track" + trackID + "_BestTime" + (i + 1),
+                times[i]
+            );
         }
 
         PlayerPrefs.Save();
@@ -161,7 +165,7 @@ public class RaceFinishManager : MonoBehaviour
 
     public void RefreshBestTime()
     {
-        float best = PlayerPrefs.GetFloat("BestTime1", -1);
+        float best = PlayerPrefs.GetFloat("Track" + trackID + "_BestTime1", -1);
 
         if (best < 0)
         {
