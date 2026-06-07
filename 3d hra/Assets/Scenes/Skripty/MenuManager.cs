@@ -90,5 +90,9 @@ public class MenuManager : MonoBehaviour
     {
         casePanel.SetActive(false);
     }
+    public void QuitGame()
+    {
+        Application.Quit();
+    }
 
 }
