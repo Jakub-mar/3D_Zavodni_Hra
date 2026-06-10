@@ -20,6 +20,10 @@ public class AICarController : MonoBehaviour
     public float maxSpeed = 200f;   // MAX 200 km/h
     public float slowSpeed = 60f;   // minimální rychlost v zatáčce
     public float highSpeedSteer = 15f;
+    public float speedVariation = 15f;
+    public float steerVariation = 5f;
+
+    private float laneOffset;
 
     private Rigidbody rb;
 
@@ -27,6 +31,11 @@ public class AICarController : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         rb.centerOfMass = new Vector3(0, -0.7f, 0.1f);
+
+        maxSpeed += Random.Range(-speedVariation, speedVariation);
+        maxSteer += Random.Range(-steerVariation, steerVariation);
+
+        laneOffset = Random.Range(-2f, 2f);
     }
 
     void FixedUpdate()
@@ -42,7 +51,12 @@ public class AICarController : MonoBehaviour
 
     void ApplySteer()
     {
-        Vector3 relativeVector = transform.InverseTransformPoint(nodes[currentNode].position);
+        Vector3 targetPos =
+    nodes[currentNode].position +
+    nodes[currentNode].right * laneOffset;
+
+        Vector3 relativeVector =
+            transform.InverseTransformPoint(targetPos);
 
         float speed = rb.linearVelocity.magnitude * 3.6f;
 

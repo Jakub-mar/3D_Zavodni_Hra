@@ -70,4 +70,14 @@ public class LapSystem : MonoBehaviour
         raceFinishManager.FinishRace(timer, this);
     }
     public int GetLap() => currentLap;
+
+    public int GetCheckpoint()
+    {
+        return currentCheckpoint;
+    }
+
+    public int GetCurrentLap()
+    {
+        return currentLap;
+    }
 }
