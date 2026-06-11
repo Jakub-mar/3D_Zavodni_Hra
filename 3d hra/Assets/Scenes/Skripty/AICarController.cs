@@ -26,6 +26,8 @@ public class AICarController : MonoBehaviour
     private float laneOffset;
 
     private Rigidbody rb;
+    [Header("Lane")]
+    public bool useOffset = true;
 
     void Start()
     {
@@ -35,7 +37,11 @@ public class AICarController : MonoBehaviour
         maxSpeed += Random.Range(-speedVariation, speedVariation);
         maxSteer += Random.Range(-steerVariation, steerVariation);
 
-        laneOffset = Random.Range(-2f, 2f);
+        laneOffset = Random.Range(-5f, 5f);
+        if (useOffset)
+            laneOffset = Random.Range(-5f, 5f);
+        else
+            laneOffset = 0f;
     }
 
     void FixedUpdate()

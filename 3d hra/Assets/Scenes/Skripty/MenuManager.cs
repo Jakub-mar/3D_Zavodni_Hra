@@ -15,6 +15,11 @@ public class MenuManager : MonoBehaviour
     void Start()
     {
         ShowMainMenu();
+        if (PlayerProfile.instance != null)
+        {
+            PlayerProfile.instance.Load();
+            PlayerProfile.instance.UpdateUI();
+        }
     }
     public void ShowCarSelect()
     {

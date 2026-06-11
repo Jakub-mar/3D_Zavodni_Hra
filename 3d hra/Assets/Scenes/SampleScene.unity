@@ -357,7 +357,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LapSystem
   totalCheckpoints: 1
-  totalLaps: 1
+  totalLaps: 3
   raceFinishManager: {fileID: 703936663}
   racerName: Auto 1
   isPlayer: 1
@@ -1180,7 +1180,7 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
+    rgba: 4281479730
   m_fontColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
@@ -1193,7 +1193,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
@@ -2292,7 +2292,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LapSystem
   totalCheckpoints: 1
-  totalLaps: 1
+  totalLaps: 3
   raceFinishManager: {fileID: 703936663}
   racerName: Car
   isPlayer: 1
@@ -2863,8 +2863,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab287c140d572434dab43d5b1011b8ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LapSystem
-  totalCheckpoints: 0
-  totalLaps: 0
+  totalCheckpoints: 1
+  totalLaps: 3
   raceFinishManager: {fileID: 703936663}
   racerName: Auto 4
   isPlayer: 0
@@ -4556,7 +4556,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &381899332
 RectTransform:
   m_ObjectHideFlags: 0
@@ -6350,7 +6350,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LapSystem
   totalCheckpoints: 1
-  totalLaps: 1
+  totalLaps: 3
   raceFinishManager: {fileID: 703936663}
   racerName: Car
   isPlayer: 1
@@ -6513,7 +6513,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LapSystem
   totalCheckpoints: 1
-  totalLaps: 1
+  totalLaps: 3
   raceFinishManager: {fileID: 703936663}
   racerName: Auto 3
   isPlayer: 0
@@ -9188,7 +9188,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &860204480
 RectTransform:
   m_ObjectHideFlags: 0
@@ -9228,7 +9228,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 1/3
+  m_text: 1/4
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -10392,7 +10392,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: -168.9}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1009637644
@@ -14758,6 +14758,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 19521586356305222, guid: 713764ce0660bc34f9d7bec190dc355b, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 104696f8b5f23d24586d858b68916bdc, type: 2}
     - target: {fileID: 3265119599039379194, guid: 713764ce0660bc34f9d7bec190dc355b, type: 3}
       propertyPath: m_LocalPosition.x
       value: -4.9
@@ -14853,6 +14857,10 @@ PrefabInstance:
     - target: {fileID: 7187816201000598199, guid: 713764ce0660bc34f9d7bec190dc355b, type: 3}
       propertyPath: slowSpeed
       value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 7187816201000598199, guid: 713764ce0660bc34f9d7bec190dc355b, type: 3}
+      propertyPath: useOffset
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7187816201000598199, guid: 713764ce0660bc34f9d7bec190dc355b, type: 3}
       propertyPath: frontRight
@@ -15947,6 +15955,10 @@ PrefabInstance:
     - target: {fileID: 1410874874540654240, guid: c656b3529a02d574a8df7a7eb0197d59, type: 3}
       propertyPath: racerName
       value: Hrac
+      objectReference: {fileID: 0}
+    - target: {fileID: 1410874874540654240, guid: c656b3529a02d574a8df7a7eb0197d59, type: 3}
+      propertyPath: totalLaps
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 1410874874540654240, guid: c656b3529a02d574a8df7a7eb0197d59, type: 3}
       propertyPath: raceFinishManager
@@ -17204,6 +17216,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 19521586356305222, guid: 713764ce0660bc34f9d7bec190dc355b, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: d2344366b80fe3d4f886ec412e0174fa, type: 2}
     - target: {fileID: 3265119599039379194, guid: 713764ce0660bc34f9d7bec190dc355b, type: 3}
       propertyPath: m_LocalPosition.x
       value: 5.54
@@ -17214,7 +17230,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3265119599039379194, guid: 713764ce0660bc34f9d7bec190dc355b, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -62.77
+      value: -52.39
       objectReference: {fileID: 0}
     - target: {fileID: 3265119599039379194, guid: 713764ce0660bc34f9d7bec190dc355b, type: 3}
       propertyPath: m_LocalRotation.w
@@ -17250,7 +17266,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6902319263003682225, guid: 713764ce0660bc34f9d7bec190dc355b, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7187816201000598199, guid: 713764ce0660bc34f9d7bec190dc355b, type: 3}
       propertyPath: FL
@@ -17840,7 +17856,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LapSystem
   totalCheckpoints: 1
-  totalLaps: 1
+  totalLaps: 3
   raceFinishManager: {fileID: 703936663}
   racerName: Car
   isPlayer: 1
@@ -17895,12 +17911,12 @@ MonoBehaviour:
   frontRightMesh: {fileID: 388354653}
   rearLeftMesh: {fileID: 388354652}
   rearRightMesh: {fileID: 388354651}
-  motorTorque: 4000
+  motorTorque: 6000
   maxSteerAngle: 30
   brakeTorque: 2000
   handBrakeTorque: 8000
-  maxSpeed: 200
-  downforce: 50
+  maxSpeed: 260
+  downforce: 100
   steerSmoothTime: 0.08
   highSpeedSteerFactor: 0.35
 --- !u!54 &1906709443
@@ -18577,7 +18593,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LapSystem
   totalCheckpoints: 1
-  totalLaps: 1
+  totalLaps: 3
   raceFinishManager: {fileID: 703936663}
   racerName: Car
   isPlayer: 1
@@ -18730,7 +18746,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1955038417
 RectTransform:
   m_ObjectHideFlags: 0
@@ -19610,7 +19626,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LapSystem
   totalCheckpoints: 1
-  totalLaps: 1
+  totalLaps: 3
   raceFinishManager: {fileID: 703936663}
   racerName: Auto 1
   isPlayer: 1
@@ -20379,7 +20395,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LapSystem
   totalCheckpoints: 1
-  totalLaps: 1
+  totalLaps: 3
   raceFinishManager: {fileID: 703936663}
   racerName: Car
   isPlayer: 1
@@ -21445,6 +21461,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 19521586356305222, guid: 713764ce0660bc34f9d7bec190dc355b, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: c4c2ee3e832cffd48bb9d156c2b21376, type: 2}
     - target: {fileID: 3265119599039379194, guid: 713764ce0660bc34f9d7bec190dc355b, type: 3}
       propertyPath: m_LocalPosition.x
       value: -4.71
@@ -21560,6 +21580,10 @@ PrefabInstance:
     - target: {fileID: 7187816201000598199, guid: 713764ce0660bc34f9d7bec190dc355b, type: 3}
       propertyPath: slowSpeed
       value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 7187816201000598199, guid: 713764ce0660bc34f9d7bec190dc355b, type: 3}
+      propertyPath: useOffset
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7187816201000598199, guid: 713764ce0660bc34f9d7bec190dc355b, type: 3}
       propertyPath: frontRight
@@ -21718,7 +21742,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LapSystem
   totalCheckpoints: 1
-  totalLaps: 1
+  totalLaps: 3
   raceFinishManager: {fileID: 703936663}
   racerName: Auto 2
   isPlayer: 0

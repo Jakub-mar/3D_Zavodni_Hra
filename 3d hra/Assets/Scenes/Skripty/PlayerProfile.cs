@@ -61,7 +61,7 @@ public class PlayerProfile : MonoBehaviour
         UpdateUI();
     }
 
-    void UpdateUI()
+    public void UpdateUI()
     {
         if (pointsText != null)
             pointsText.text = "Body: " + points;
@@ -86,7 +86,7 @@ public class PlayerProfile : MonoBehaviour
         Debug.Log("Uloženo do: " + savePath);
     }
 
-    void Load()
+    public void Load()
     {
         if (File.Exists(savePath))
         {
@@ -130,6 +130,11 @@ public class PlayerProfile : MonoBehaviour
             wins++;
 
         Save();
+        UpdateUI();
+    }
+    public void ReloadData()
+    {
+        Load();
         UpdateUI();
     }
 }
